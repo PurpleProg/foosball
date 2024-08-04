@@ -26,7 +26,7 @@ def write_encode_string(file_name: str, data: Any) -> None:
 
 # cheats
 DEBUG = False
-INVISIBILITY = DEBUG
+INVISIBILITY = DEBUG or True
 SHOW_HITBOX = DEBUG   #  draw the rect
 SHOW_DIRECTIONS = DEBUG
 

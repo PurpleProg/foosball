@@ -5,7 +5,7 @@ import base64
 from collections.abc import Callable
 from abc import ABC
 import pygame
-from entitys import Ball, Paddle, Brick
+from entitys import Paddle
 import settings
 
 
@@ -181,50 +181,6 @@ class Gameplay():
 
         # create objects
         self.paddle = Paddle(self.game)
-        self.balls: list = []
-        self.balls.append(Ball(
-            game=self.game,
-            gameplay=self,
-            pos=pygame.Vector2(
-                x=settings.WIDTH/2,
-                y=self.paddle.rect.top - self.paddle.rect.height/2 - 5
-                )
-        ))
-        self.powerups: list = []
-
-        self.setup_bricks()
-
-    def setup_bricks(self) -> None:
-        """ create the bricks and center them on the screen
-        can maybe implement levels by changing this method
-        """
-        self.bricks: list = []
-
-        gap = 5
-        height = int(settings.HEIGHT*0.6)
-
-        # to get width and height
-        brick = Brick(0, 0)
-
-        row_size = brick.rect.height + gap
-        column_size = brick.rect.width + gap
-
-        number_of_columns = settings.WIDTH // column_size
-        number_of_rows = height // row_size
-
-        used_width = (number_of_columns * column_size) - gap
-        x_offset = (settings.WIDTH - used_width) // 2
-
-        # used_height = (number_of_rows * row_size) - gap
-        # y_offset = (height - used_height) // 2
-        y_offset = row_size * min(((settings.HEIGHT * 0.1) // row_size), 3)
-
-        for y in range(number_of_rows):
-            for x in range(number_of_columns):
-                self.bricks.append(Brick(
-                    x_offset + (x * column_size),
-                    y_offset + (y * row_size)
-                    ))
 
     def update(self) -> None:
         """ update the balls, powerups and paddle """
@@ -251,12 +207,7 @@ class Gameplay():
                     self.balls.remove(ball)
 
 
-            # check win and lose
-            if not self.bricks:
-                Win(self.game)   # no return
-            if not self.balls:
-                Gameover(self.game)  # no return
-
+           
         # process keys press
         if self.game.keys['ESCAPE']:
             self.game.keys['ESCAPE'] = False   # prevente the pause to immediatly quit
@@ -268,17 +219,8 @@ class Gameplay():
     def render(self, canvas: pygame.Surface) -> None:
         """ blit bricks, powerups, paddle and balls to the given surface """
         self.canvas.fill(color=settings.BACKGROUND_COLOR)
-
-        for brick in self.bricks:
-            brick.render(self.canvas)
-
-        for powerup in self.powerups:
-            powerup.render(self.canvas)
-
         self.paddle.render(self.canvas)
 
-        for ball in self.balls:
-            ball.render(self.canvas)
 
         canvas.blit(self.canvas, dest=(0, 0))
 

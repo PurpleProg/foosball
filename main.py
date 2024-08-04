@@ -57,7 +57,7 @@ class Game:
         """
         while self.running:
             self.event()
-            self.udpate()
+            self.update()
             self.render()
 
     def event(self) -> None:
@@ -101,7 +101,7 @@ class Game:
                         case pygame.K_p:
                             self.keys['p'] = False
 
-    def udpate(self) -> None:
+    def update(self) -> None:
         """ update the last gamestate in the stack """
         self.stack[-1].update()
 

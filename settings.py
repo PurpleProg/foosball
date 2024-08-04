@@ -64,7 +64,6 @@ MAX_BALLS = 10
 
 
 BALL_RADIUS = 8
-BRICK_SCORE = 10
 
 # those are change for each difficulties, default is normal difficultie.
 ####################################################################

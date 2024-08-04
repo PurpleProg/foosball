@@ -32,7 +32,6 @@ class Ball:
     def update(
         self,
         paddle,
-        bricks: list,
         powerups: list,
     ) -> None:
         """change the position of the ball"""
@@ -42,21 +41,19 @@ class Ball:
         self.rect.x = int(self.pos.x)
         self.rect.y = int(self.pos.y)
 
-        self.collide(paddle, bricks, powerups)
+        self.collide(paddle, powerups)
 
     def collide(
         self,
         paddle,
-        bricks: list,
         powerups: list
     ) -> None:
-        """ bounce on walls, bricks and paddle.
-        Spawns the powerups and kill the bricks.
+        """ bounce on walls and paddle.
+        Spawns the powerups.
         """
 
         self.collide_with_walls()
         self.collide_with_paddle(paddle=paddle)
-        self.collide_with_briks(bricks=bricks, powerups=powerups)
 
     def collide_with_walls(self) -> None:
         """ bounce on walls and ceiling """
@@ -90,56 +87,6 @@ class Ball:
 
             self.direction.x = math.sin(bounce_angle_in_radian)
             self.direction.y = -math.cos(bounce_angle_in_radian)
-
-    def collide_with_briks(
-        self,
-        bricks: list,
-        powerups: list,
-    ) -> None:
-        """ bounce, spawn powerups and kill bricks """
-
-        if colliding_bricks_index := self.rect.collidelistall(bricks):
-            # spawn powerup
-            r = random.randint(1, 100)
-            if r <= settings.POWERUP_PADDLE_CHANCE:
-                powerups.append(PaddleGrowup(
-                    game=self.game,
-                    gameplay=self.gameplay,
-                    pos=bricks[colliding_bricks_index[0]].rect.center
-                ))
-            elif r >= (100-settings.POWERUP_BALL_CHANCE):
-                powerups.append(MultipleBalls(
-                    game=self.game,
-                    gameplay=self.gameplay,
-                    pos=self.rect.center
-                ))
-
-            ### get the incoming direction ###
-            # X axis
-            if self.direction.x > 0:
-                delta_x = self.rect.right - bricks[colliding_bricks_index[0]].rect.left
-            else:
-                delta_x = bricks[colliding_bricks_index[0]].rect.right - self.rect.left
-            # Y axis
-            if self.direction.y > 0:
-                delta_y = self.rect.bottom - bricks[colliding_bricks_index[0]].rect.top
-            else:
-                delta_y = bricks[colliding_bricks_index[0]].rect.bottom - self.rect.top
-
-            #  change the direction
-            if abs(delta_x - delta_y) < settings.APPROX_CORNER_COLLISION:   # corner (aproximation)
-                self.direction.x *= -1
-                self.direction.y *= -1
-            elif delta_x > delta_y:   # comming from the top of the block
-                self.direction.y *= -1
-            else:                      # comming from the sides
-                self.direction.x *= -1
-
-            # removes brick from the game
-            bricks.remove(bricks[colliding_bricks_index[0]])
-            self.gameplay.bricks_breaked += 1
-
-            self.direction.normalize_ip()
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """
@@ -260,29 +207,6 @@ class Paddle:
                 ),
                 width=2,
             )
-
-
-class Brick:
-    """ brick constructor """
-    def __init__(self, pos_x, pos_y) -> None:
-        super().__init__()
-        self.pos: pygame.Vector2 = pygame.Vector2(pos_x, pos_y)
-        self.image: pygame.Surface = pygame.image.load(
-            file='assets/Bricks/Colored/Colored_Purple-64x32.png'
-        ).convert()
-        self.image.set_colorkey('#ffffff')
-        self.rect: pygame.Rect = self.image.get_rect()
-        self.rect.topleft = int(self.pos.x), int(self.pos.y)
-
-    def update(self) -> None:
-        """ TODO:
-        change image
-        make a brick have multiple lifes
-        """
-
-    def render(self, canvas) -> None:
-        """ blit it's image to a surface """
-        canvas.blit(self.image, self.rect)
 
 
 class Powerup(ABC):

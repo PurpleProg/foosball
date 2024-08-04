@@ -5,7 +5,7 @@ import base64
 from collections.abc import Callable
 from abc import ABC
 import pygame
-from entitys import Ball, Paddle, Brick
+from entitys import Ball, Paddle
 import settings
 
 
@@ -173,7 +173,6 @@ class Gameplay():
         self.game.stack.append(self)
 
         self.canvas = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
-        self.bricks_breaked = 0
         self.playtime_in_frames = 0
 
         # timer
@@ -192,39 +191,6 @@ class Gameplay():
         ))
         self.powerups: list = []
 
-        self.setup_bricks()
-
-    def setup_bricks(self) -> None:
-        """ create the bricks and center them on the screen
-        can maybe implement levels by changing this method
-        """
-        self.bricks: list = []
-
-        gap = 5
-        height = int(settings.HEIGHT*0.6)
-
-        # to get width and height
-        brick = Brick(0, 0)
-
-        row_size = brick.rect.height + gap
-        column_size = brick.rect.width + gap
-
-        number_of_columns = settings.WIDTH // column_size
-        number_of_rows = height // row_size
-
-        used_width = (number_of_columns * column_size) - gap
-        x_offset = (settings.WIDTH - used_width) // 2
-
-        # used_height = (number_of_rows * row_size) - gap
-        # y_offset = (height - used_height) // 2
-        y_offset = row_size * min(((settings.HEIGHT * 0.1) // row_size), 3)
-
-        for y in range(number_of_rows):
-            for x in range(number_of_columns):
-                self.bricks.append(Brick(
-                    x_offset + (x * column_size),
-                    y_offset + (y * row_size)
-                    ))
 
     def update(self) -> None:
         """ update the balls, powerups and paddle """
@@ -240,20 +206,18 @@ class Gameplay():
 
             # update score
             playtime = self.playtime_in_frames / settings.FPS
-            self.game.score = (self.bricks_breaked * settings.BRICK_SCORE) - playtime
+            self.game.score = -playtime
 
             for powerup in self.powerups:
                 powerup.update()
             self.paddle.update(self.powerups)
             for ball in self.balls.copy():
-                ball.update(self.paddle, self.bricks, self.powerups)
+                ball.update(self.paddle, self.powerups)
                 if ball.pos.y > settings.HEIGHT and not settings.INVISIBILITY:
                     self.balls.remove(ball)
 
 
             # check win and lose
-            if not self.bricks:
-                Win(self.game)   # no return
             if not self.balls:
                 Gameover(self.game)  # no return
 
@@ -266,11 +230,8 @@ class Gameplay():
             Win(self.game)
 
     def render(self, canvas: pygame.Surface) -> None:
-        """ blit bricks, powerups, paddle and balls to the given surface """
+        """ blit powerups, paddle and balls to the given surface """
         self.canvas.fill(color=settings.BACKGROUND_COLOR)
-
-        for brick in self.bricks:
-            brick.render(self.canvas)
 
         for powerup in self.powerups:
             powerup.render(self.canvas)

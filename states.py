@@ -173,7 +173,6 @@ class Gameplay():
         self.game.stack.append(self)
 
         self.canvas = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
-        self.bricks_breaked = 0
         self.playtime_in_frames = 0
 
         # timer
@@ -196,13 +195,13 @@ class Gameplay():
 
             # update score
             playtime = self.playtime_in_frames / settings.FPS
-            self.game.score = (self.bricks_breaked * settings.BRICK_SCORE) - playtime
+            self.game.score = -playtime
 
             for powerup in self.powerups:
                 powerup.update()
             self.paddle.update(self.powerups)
             for ball in self.balls.copy():
-                ball.update(self.paddle, self.bricks, self.powerups)
+                ball.update(self.paddle, self.powerups)
                 if ball.pos.y > settings.HEIGHT and not settings.INVISIBILITY:
                     self.balls.remove(ball)
 
@@ -217,7 +216,7 @@ class Gameplay():
             Win(self.game)
 
     def render(self, canvas: pygame.Surface) -> None:
-        """ blit bricks, powerups, paddle and balls to the given surface """
+        """ blit powerups, paddle and balls to the given surface """
         self.canvas.fill(color=settings.BACKGROUND_COLOR)
         self.paddle.render(self.canvas)
 

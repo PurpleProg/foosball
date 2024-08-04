@@ -80,13 +80,13 @@ class Ball:
         """ bounce on paddle, calculate bounce angle """
         if self.rect.colliderect(paddle.rect):
             # calculate angle
-            distance = self.rect.centerx - paddle.rect.centerx
-            normalized_distance = distance/(paddle.rect.width/2)
+            distance = self.rect.centery - paddle.rect.centery
+            normalized_distance = distance/(paddle.rect.height/2)
             bounce_angle = settings.MAX_BOUNCE_ANGLE * normalized_distance
             bounce_angle_in_radian = math.radians(bounce_angle)
 
-            self.direction.x = math.sin(bounce_angle_in_radian)
-            self.direction.y = -math.cos(bounce_angle_in_radian)
+            self.direction.x *= -1
+            self.direction.y = math.sin(bounce_angle_in_radian)
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """

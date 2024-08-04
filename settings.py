@@ -25,7 +25,7 @@ def write_encode_string(file_name: str, data: Any) -> None:
 
 
 # cheats
-DEBUG = False
+DEBUG = True
 INVISIBILITY = DEBUG or True
 SHOW_HITBOX = DEBUG   #  draw the rect
 SHOW_DIRECTIONS = DEBUG
@@ -34,7 +34,8 @@ SHOW_DIRECTIONS = DEBUG
 WIDTH = 1024
 HEIGHT = 512
 
-FPS = 10 if DEBUG else 60
+# FPS = 10 if DEBUG else 60
+FPS = 60
 
 WIDTH_BACKUP = WIDTH
 HEIGHT_BACKUP = HEIGHT

@@ -196,17 +196,7 @@ class Gameplay():
             # update score
             playtime = self.playtime_in_frames / settings.FPS
             self.game.score = -playtime
-
-            for powerup in self.powerups:
-                powerup.update()
-            self.paddle.update(self.powerups)
-            for ball in self.balls.copy():
-                ball.update(self.paddle, self.powerups)
-                if ball.pos.y > settings.HEIGHT and not settings.INVISIBILITY:
-                    self.balls.remove(ball)
-
-
-           
+ 
         # process keys press
         if self.game.keys['ESCAPE']:
             self.game.keys['ESCAPE'] = False   # prevente the pause to immediatly quit

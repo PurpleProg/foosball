@@ -27,8 +27,8 @@ class Paddle:
             angle=90,
         )
         self.pos: pygame.Vector2 = pygame.Vector2(
-            x=settings.WIDTH / 2,
-            y=settings.HEIGHT - (settings.HEIGHT / 10)
+            x=settings.WIDTH / 10,
+            y=settings.HEIGHT / 2
         )  # center the paddle on x and 10% of height on y
 
         self.rect: pygame.Rect = self.image.get_rect()
@@ -38,7 +38,7 @@ class Paddle:
     def update(self, powerups: list) -> None:
         """ change the direction, move and collide """
         # update direction with arrows
-        if self.game.keys['RIGHT']:
+        if self.game.keys['UP']:
             self.direction.x = 1
         elif self.game.keys['LEFT']:
             self.direction.x = -1
@@ -46,8 +46,10 @@ class Paddle:
             self.direction.x = 0
         if self.game.keys['UP']:
             self.direction.y = -1
+            #print('up')
         elif self.game.keys['DOWN']:
             self.direction.y = 1
+            #print ('down')
         else:
             self.direction.y = 0
 
@@ -60,9 +62,9 @@ class Paddle:
         self.rect.centery = int(self.pos.y)
 
         # collide powerups
-        for powerup in powerups:
+        '''for powerup in powerups:
             if self.rect.colliderect(powerup.rect):
-                powerup.activate()
+                powerup.activate()'''
 
         # prevent paddle from going out of bouds
         # collide with walls

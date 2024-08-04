@@ -76,8 +76,10 @@ class Game:
                             self.keys['RETURN'] = True
                         case pygame.K_UP:
                             self.keys['UP'] = True
+                            print('up')
                         case pygame.K_DOWN:
                             self.keys['DOWN'] = True
+                            print('down')
                         case pygame.K_RIGHT:
                             self.keys['RIGHT'] = True
                         case pygame.K_LEFT:

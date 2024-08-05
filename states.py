@@ -183,6 +183,7 @@ class Gameplay():
 
     def update(self) -> None:
         """ update the balls, powerups and paddle """
+        self.paddle.update([])
         # countdown befor start
         if self.countdown_in_frames:
             # countdown_in_seconds = self.countdown_in_frames/settings.FPS

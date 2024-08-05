@@ -7,7 +7,6 @@ import settings
 
 
 
-
 class Paddle:
     """ move with keys, collide with walls and powerups """
     def __init__(self, game) -> None:
@@ -38,7 +37,7 @@ class Paddle:
     def update(self, powerups: list) -> None:
         """ change the direction, move and collide """
         # update direction with arrows
-        if self.game.keys['UP']:
+        if self.game.keys['RIGHT']:
             self.direction.x = 1
         elif self.game.keys['LEFT']:
             self.direction.x = -1
@@ -46,15 +45,15 @@ class Paddle:
             self.direction.x = 0
         if self.game.keys['UP']:
             self.direction.y = -1
-            #print('up')
+            print('up')
         elif self.game.keys['DOWN']:
             self.direction.y = 1
-            #print ('down')
+            print ('down')
         else:
             self.direction.y = 0
 
         # move the paddle
-        # self.pos.x += self.speed * self.direction.x
+        self.pos.x += self.speed * self.direction.x
         self.pos.y += self.speed * self.direction.y
 
         # update rect
@@ -77,13 +76,13 @@ class Paddle:
             self.rect.left = 0
             self.pos.x = self.rect.centerx
         # y axis
-        if self.rect.bottom > settings.HEIGHT:
+        '''if self.rect.bottom > settings.HEIGHT:
             self.rect.bottom = settings.HEIGHT
             self.game.keys['DOWN'] = False
             self.pos.y = self.rect.centery
         elif self.rect.top < 0:
             self.rect.top = 0
-            self.pos.y = self.rect.centery
+            self.pos.y = self.rect.centery'''
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """
@@ -95,6 +94,7 @@ class Paddle:
                 rect=self.rect,
                 width=1
             )
+        print(self.pos.x,self.pos.y)
         if settings.SHOW_DIRECTIONS:
             pygame.draw.line(
                 surface=canvas,

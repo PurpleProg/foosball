@@ -37,7 +37,18 @@ class State(ABC):
 
     def enter_state(self) -> None:
         """ append itself to the stack """
+        if len(self.game.stack) > 1:
+            self.prev_state = self.game.stack[-1]
         self.game.stack.append(self)
+
+    def exit_state(self) -> None:
+        """ pop itself form the stack """
+        if len(self.game.stack) > 1:
+            self.game.stack.pop()
+        else:
+            # the stack shall NEVER be empty
+            # idk maybe quit the game ?
+            pass
 
 class Menu(State):
     """ Parent class of all menus, handel buttons and labels rendering.
@@ -45,7 +56,7 @@ class Menu(State):
     Exactly one button shall be set selected.
     The labels can be placed anywhere """
 
-    class Label(pygame.sprite.Sprite):
+    class Label:
         """ text to put  anywhere on a menu """
         def __init__(
             self,
@@ -122,13 +133,15 @@ class Menu(State):
         if self.is_transparent:
             self.background.set_alpha(150)   # 0 is fully transparent, 255 is fully opaque
 
-    def go_back(self) -> None:
-        """ just pop the stack """
-        self.game.stack.pop()
-
     def update(self, keys: set[str]) -> None:
         """ move the selected/focus across buttons
         and apply action if a button is pressed """
+
+        # exit the menu if ESC is pressed
+        if 'ESCAPE' in keys:
+            keys.remove('ESCAPE')
+            self.exit_state()
+
         for i, button in enumerate(self.buttons):
             if 'UP' in keys and button.selected and i != len(self.buttons)-1:
                 keys.remove('UP')
@@ -154,7 +167,7 @@ class Menu(State):
     def render(self, source_canvas: pygame.Surface) -> None:
         """ blit buttons, labels and a background to the given surface """
         if self.is_transparent:
-            canvas = self.game.stack[-2].canvas.copy()
+            canvas = self.prev_state.canvas.copy()
         else:
             canvas = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
 
@@ -221,7 +234,7 @@ class Gameplay(State):
         # process keys press
         if 'ESCAPE' in keys:
             keys.remove('ESCAPE')   # prevente the pause to immediatly quit
-            Pause(self.game, self)
+            Pause(self.game)
         if 'p' in keys:
             keys.remove('p')
             Win(self.game)
@@ -239,10 +252,9 @@ class Mainmenu(Menu):
     """ this is the first state in the stack """
     def __init__(self, game) -> None:
         super().__init__(game, settings.MAINMENU_BACKGROUND_COLOR)
-        self.game = game
 
         # enter state
-        self.game.stack.append(self)
+        self.enter_state()
 
         # init buttons
         self.buttons.extend([
@@ -305,7 +317,7 @@ class Gameover(Menu):
     def __init__(self, game) -> None:
         super().__init__(game, settings.GAMEOVER_BACKGROUND_COLOR)
         # append itself to the stack
-        self.game.stack.append(self)
+        self.enter_state()
 
         # save score
         if self.game.score > self.game.highscore['manu']:
@@ -349,14 +361,14 @@ class Gameover(Menu):
     def to_menu(self) -> None:
         """ go back to the mainmenu by poping the states stack """
         # stack :               mainmenu > gameplay > gameover
-        self.game.stack.pop()  # back to gameplay
-        self.game.stack.pop()  # back to menu
+        self.exit_state()  # back to gameplay
+        self.exit_state()  # back to menu
 
     def replay(self) -> None:
         """ create a new Gameplay state and modify the state stack """
         # stack :               mainmenu > gameplay > gameover
-        self.game.stack.pop()  # back to gameplay
-        self.game.stack.pop()  # back to menu
+        self.exit_state()  # back to gameplay
+        self.exit_state()  # back to menu
         Gameplay(self.game)
 
 
@@ -368,7 +380,7 @@ class Win(Menu):
     def __init__(self, game) -> None:
         super().__init__(game, settings.WIN_BACKGROUND_COLOR)
         # append itself to the stack
-        game.stack.append(self)
+        self.enter_state()
 
         # save score
         if self.game.score > self.game.highscore['manu']:
@@ -409,7 +421,7 @@ class Win(Menu):
                 pos=(settings.WIDTH//2, (settings.HEIGHT//16) * 13),
             ),  # highscore
             Menu.Label(
-                text=f"playtime : {self.game.stack[-2].playtime_in_frames/settings.FPS:.2f}",
+                text=f"playtime : {self.prev_state.playtime_in_frames/settings.FPS:.2f}",
                 font=self.bold_font,
                 pos=(settings.WIDTH//2, int(settings.HEIGHT * (15 / 16))),
             ),  # playtime
@@ -417,12 +429,12 @@ class Win(Menu):
 
     def to_menu(self) -> None:
         """ pop stack twice """
-        self.game.stack.pop()  # back to gameplay
-        self.game.stack.pop() # back to menu
+        self.exit_state()  # back to gameplay
+        self.exit_state() # back to menu
 
     def replay(self) -> None:
         """ recreate a gamplay state """
-        self.game.stack.pop()   # back to menu
+        self.exit_state()   # back to menu
         Gameplay(self.game)
 
 
@@ -430,13 +442,11 @@ class Pause(Menu):
     """ is a state of the scack,
     is also transparent so you can see the last frame of the last state
     """
-    def __init__(self, game, gameplay: Gameplay) -> None:
+    def __init__(self, game) -> None:
         super().__init__(game, settings.PAUSE_BACKGROUND_COLOR, is_transparent=True)
 
-        self.gameplay = gameplay
-
         # append itself to the stack
-        self.game.stack.append(self)
+        self.enter_state()
 
         self.buttons.append(Menu.Button(
             text='menu',
@@ -450,6 +460,8 @@ class Pause(Menu):
             selected=True
         ))  # resume
 
+        # buttons are not updated each frame
+        # first update after beeing append
         for button in self.buttons:
             button.update()
 
@@ -473,16 +485,16 @@ class Pause(Menu):
 
     def resume(self) -> None:
         """ after pause restart a counter """
-        self.gameplay.countdown_in_frames = settings.COUNTDOWN*settings.FPS
-        self.game.stack.pop()
+        self.prev_state.countdown_in_frames = settings.COUNTDOWN*settings.FPS
+        self.exit_state()
 
     def to_mainmenu(self) -> None:
-        """pop stack twice"""
+        """ exit state twice"""
         # the stack :
         # >main>gameplay>pause
-        self.game.stack.pop()
+        self.exit_state()
         # >main>gameplay
-        self.game.stack.pop()
+        self.exit_state()
         # >main
 
 
@@ -491,18 +503,11 @@ class Settings(Menu):
     def __init__(self, game) -> None:
         super().__init__(game, settings.SETTINGS_BACKGROUND_COLOR, is_transparent=False)
 
-        self.game = game
-
         # append itself to the stack
-        self.game.stack.append(self)
+        self.enter_state()
 
         # create buttons
         self.buttons.extend([
-            Menu.Button(
-                text='Back',
-                fonction=self.go_back,
-                font=self.font,
-            ),  # back
             Menu.Button(
                 text='sound',
                 fonction=self.to_sound_settings,
@@ -557,16 +562,10 @@ class Difficulties(Menu):
     """
     def __init__(self, game) -> None:
         super().__init__(game, background_color=settings.SETTINGS_BACKGROUND_COLOR)
-        self.game = game
-        self.game.stack.append(self)
+        self.enter_state()
 
         # buttons
         self.buttons.extend([
-            Menu.Button(
-                text='Back',
-                fonction=self.go_back,
-                font=self.font,
-            ),  # back
             Menu.Button(
                 text='hard',
                 fonction=self.hard,
@@ -599,7 +598,7 @@ class Difficulties(Menu):
         settings.POWERUP_PADDLE_CHANCE = 7
         settings.POWERUP_BALL_CHANCE = 3
         settings.POWERUP_PADDLE_SIZE = 1.1
-        self.go_back()
+        self.exit_state()
 
     def normal(self) -> None:
         """ change settings values to tweak speeds and stuff """
@@ -612,7 +611,7 @@ class Difficulties(Menu):
         settings.POWERUP_PADDLE_CHANCE = 10
         settings.POWERUP_BALL_CHANCE = 10
         settings.POWERUP_PADDLE_SIZE = 1.2
-        self.go_back()
+        self.exit_state()
 
     def easy(self) -> None:
         """ change settings values to tweak speeds and stuff """
@@ -625,7 +624,7 @@ class Difficulties(Menu):
         settings.POWERUP_PADDLE_CHANCE = 25
         settings.POWERUP_BALL_CHANCE = 15
         settings.POWERUP_PADDLE_SIZE = 1.4
-        self.go_back()
+        self.exit_state()
 
 
 class Resolution(Menu):
@@ -634,16 +633,10 @@ class Resolution(Menu):
     """
     def __init__(self, game) -> None:
         super().__init__(game, background_color=settings.SETTINGS_BACKGROUND_COLOR)
-        self.game = game
-        self.game.stack.append(self)
+        self.enter_state()
 
         # buttons
         self.buttons.extend([
-            Menu.Button(
-                text='Back',
-                fonction=self.go_back,
-                font=self.font
-            ),  # back
             Menu.Button(
                 text='512x256',
                 fonction=self.res_512x256,
@@ -708,10 +701,12 @@ class Resolution(Menu):
 
     def reload_stack(self) -> None:
         """ empty the stack and recreate every items """
+
+        # you have to do that to change the sizes of the canvas TO FIX
         #  >mainmenu>settings>resolution
-        self.game.stack.pop()
-        self.game.stack.pop()
-        self.game.stack.pop()
+        self.exit_state()
+        self.exit_state()
+        self.exit_state()
         Mainmenu(self.game)
         Settings(self.game)
         Resolution(self.game)

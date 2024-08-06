@@ -22,7 +22,7 @@ class Game:
         self.fullscreen = False
 
         # init the stack
-        self.stack: list[states.Menu | states.Gameplay] = []
+        self.stack: list[state.State] = []
         states.Mainmenu(self)
 
         # init global game var

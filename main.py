@@ -29,7 +29,7 @@ class Game:
         self.score: float = 0.0
         self.running: bool = True
         self.clock = pygame.time.Clock()
-        self.keys = set()
+        self.keys: set[str] = set()
 
         self.load_highscore()
 
@@ -97,7 +97,7 @@ class Game:
 
     def update(self) -> None:
         """ update the last gamestate in the stack """
-        self.stack[-1].update()
+        self.stack[-1].update(self.keys)
 
     def render(self) -> None:
         """ render last state in stack, update screen and limit FPS."""

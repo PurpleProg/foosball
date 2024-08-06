@@ -107,18 +107,18 @@ class Menu(ABC):
         """ just pop the stack """
         self.game.stack.pop()
 
-    def update(self) -> None:
+    def update(self, keys: set[str]) -> None:
         """ move the selected/focus across buttons """
         for i, button in enumerate(self.buttons):
-            if 'UP' in self.game.keys and button.selected and i != len(self.buttons)-1:
-                self.game.keys.remove('UP')
+            if 'UP' in keys and button.selected and i != len(self.buttons)-1:
+                keys.remove('UP')
                 self.buttons[i+1].selected = True
                 button.selected = False
                 self.buttons[i+1].update()
                 button.update()
                 break
-            if 'DOWN' in self.game.keys and button.selected and i != 0:
-                self.game.keys.remove('DOWN')
+            if 'DOWN' in keys and button.selected and i != 0:
+                keys.remove('DOWN')
                 self.buttons[i-1].selected = True
                 self.buttons[i-1].update()
                 button.selected = False
@@ -126,8 +126,8 @@ class Menu(ABC):
                 break
 
             # button action
-            if 'RETURN' in self.game.keys and button.selected:
-                self.game.keys.remove('RETURN')
+            if 'RETURN' in keys and button.selected:
+                keys.remove('RETURN')
                 button.fonction()
                 # break
 
@@ -179,11 +179,11 @@ class Gameplay():
         self.countdown_in_frames = settings.COUNTDOWN*settings.FPS
 
         # create objects
-        self.paddle = Paddle(self.game)
+        self.paddle = Paddle()
 
-    def update(self) -> None:
+    def update(self, keys: set[str]) -> None:
         """ update the balls, powerups and paddle """
-        self.paddle.update([])
+        self.paddle.update(keys)
         # countdown befor start
         if self.countdown_in_frames:
             # countdown_in_seconds = self.countdown_in_frames/settings.FPS
@@ -197,13 +197,13 @@ class Gameplay():
             # update score
             playtime = self.playtime_in_frames / settings.FPS
             self.game.score = -playtime
- 
+
         # process keys press
-        if 'ESCAPE' in self.game.keys:
-            self.game.keys.remove('ESCAPE')   # prevente the pause to immediatly quit
+        if 'ESCAPE' in keys:
+            keys.remove('ESCAPE')   # prevente the pause to immediatly quit
             Pause(self.game, self)
-        if 'p' in self.game.keys:
-            self.game.keys.remove('p')
+        if 'p' in keys:
+            keys.remove('p')
             Win(self.game)
 
     def render(self, canvas: pygame.Surface) -> None:

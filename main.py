@@ -29,15 +29,7 @@ class Game:
         self.score: float = 0.0
         self.running: bool = True
         self.clock = pygame.time.Clock()
-        self.keys: dict[str, bool] = {
-            'ESCAPE': False,
-            'RETURN': False,
-            'UP': False,
-            'DOWN': False,
-            'RIGHT': False,
-            'LEFT': False,
-            'p': False,
-        }
+        self.keys = set()
 
         self.load_highscore()
 
@@ -71,37 +63,37 @@ class Game:
                 case pygame.KEYDOWN:
                     match event.key:
                         case pygame.K_ESCAPE:
-                            self.keys['ESCAPE'] = True
+                            self.keys.add('ESCAPE')
                         case pygame.K_RETURN:
-                            self.keys['RETURN'] = True
+                            self.keys.add('RETURN')
                         case pygame.K_UP:
-                            self.keys['UP'] = True
+                            self.keys.add('UP')
                             #print('up')
                         case pygame.K_DOWN:
-                            self.keys['DOWN'] = True
+                            self.keys.add('DOWN')
                             #print('down')
                         case pygame.K_RIGHT:
-                            self.keys['RIGHT'] = True
+                            self.keys.add('RIGHT')
                         case pygame.K_LEFT:
-                            self.keys['LEFT'] = True
+                            self.keys.add('LEFT')
                         case pygame.K_p:
-                            self.keys['p'] = True
+                            self.keys.add('p')
                 case pygame.KEYUP:
                     match event.key:
                         case pygame.K_ESCAPE:
-                            self.keys['ESCAPE'] = False
+                            self.keys.discard('ESCAPE')
                         case pygame.K_RETURN:
-                            self.keys['RETURN'] = False
+                            self.keys.discard('RETURN')
                         case pygame.K_UP:
-                            self.keys['UP'] = False
+                            self.keys.discard('UP')
                         case pygame.K_DOWN:
-                            self.keys['DOWN'] = False
+                            self.keys.discard('DOWN')
                         case pygame.K_RIGHT:
-                            self.keys['RIGHT'] = False
+                            self.keys.discard('RIGHT')
                         case pygame.K_LEFT:
-                            self.keys['LEFT'] = False
+                            self.keys.discard('LEFT')
                         case pygame.K_p:
-                            self.keys['p'] = False
+                            self.keys.discard('p')
 
     def update(self) -> None:
         """ update the last gamestate in the stack """

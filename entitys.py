@@ -37,18 +37,16 @@ class Paddle:
     def update(self, powerups: list) -> None:
         """ change the direction, move and collide """
         # update direction with arrows
-        if self.game.keys['RIGHT']:
+        if 'RIGHT' in self.game.keys:
             self.direction.x = 1
-        elif self.game.keys['LEFT']:
+        elif 'LEFT' in self.game.keys:
             self.direction.x = -1
         else:
             self.direction.x = 0
-        if self.game.keys['UP']:
+        if 'UP' in self.game.keys:
             self.direction.y = -1
-            print('up')
-        elif self.game.keys['DOWN']:
+        elif 'DOWN' in self.game.keys:
             self.direction.y = 1
-            print ('down')
         else:
             self.direction.y = 0
 
@@ -70,7 +68,7 @@ class Paddle:
         # x axis
         if self.rect.right > settings.WIDTH:
             self.rect.right = settings.WIDTH
-            self.game.keys['RIGHT'] = False
+            self.game.keys.remove('RIGHT')
             self.pos.x = self.rect.centerx
         elif self.rect.left < 0:
             self.rect.left = 0
@@ -78,7 +76,7 @@ class Paddle:
         # y axis
         '''if self.rect.bottom > settings.HEIGHT:
             self.rect.bottom = settings.HEIGHT
-            self.game.keys['DOWN'] = False
+            self.game.keys.remove('DOWN')
             self.pos.y = self.rect.centery
         elif self.rect.top < 0:
             self.rect.top = 0

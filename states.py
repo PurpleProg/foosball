@@ -110,15 +110,15 @@ class Menu(ABC):
     def update(self) -> None:
         """ move the selected/focus across buttons """
         for i, button in enumerate(self.buttons):
-            if self.game.keys['UP'] and button.selected and i != len(self.buttons)-1:
-                self.game.keys['UP'] = False
+            if 'UP' in self.game.keys and button.selected and i != len(self.buttons)-1:
+                self.game.keys.remove('UP')
                 self.buttons[i+1].selected = True
                 button.selected = False
                 self.buttons[i+1].update()
                 button.update()
                 break
-            if self.game.keys['DOWN'] and button.selected and i != 0:
-                self.game.keys['DOWN'] = False
+            if 'DOWN' in self.game.keys and button.selected and i != 0:
+                self.game.keys.remove('DOWN')
                 self.buttons[i-1].selected = True
                 self.buttons[i-1].update()
                 button.selected = False
@@ -126,8 +126,8 @@ class Menu(ABC):
                 break
 
             # button action
-            if self.game.keys['RETURN'] and button.selected:
-                self.game.keys['RETURN'] = False
+            if 'RETURN' in self.game.keys and button.selected:
+                self.game.keys.remove('RETURN')
                 button.fonction()
                 # break
 
@@ -199,11 +199,11 @@ class Gameplay():
             self.game.score = -playtime
  
         # process keys press
-        if self.game.keys['ESCAPE']:
-            self.game.keys['ESCAPE'] = False   # prevente the pause to immediatly quit
+        if 'ESCAPE' in self.game.keys:
+            self.game.keys.remove('ESCAPE')   # prevente the pause to immediatly quit
             Pause(self.game, self)
-        if self.game.keys['p']:
-            self.game.keys['p'] = False
+        if 'p' in self.game.keys:
+            self.game.keys.remove('p')
             Win(self.game)
 
     def render(self, canvas: pygame.Surface) -> None:

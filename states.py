@@ -3,7 +3,7 @@ import sys
 import json
 import base64
 from collections.abc import Callable
-from abc import ABC
+from abc import ABC, abstractmethod
 import pygame
 from entitys import Paddle
 import settings
@@ -20,7 +20,26 @@ def save(score: float) -> None:
         highscore.write(encoded_json)
 
 
-class Menu(ABC):
+class State(ABC):
+    """ abstract class for the state stack """
+    def __init__(self, game) -> None:
+        self.game = game
+
+    @abstractmethod
+    def update(self, keys: set[str]) -> None:
+        """ abstract state method
+        each state must have a update method """
+
+    @abstractmethod
+    def render(self, canvas: pygame.Surface) -> None:
+        """ abstract state method
+        each state must have a render method """
+
+    def enter_state(self) -> None:
+        """ append itself to the stack """
+        self.game.stack.append(self)
+
+class Menu(State):
     """ Parent class of all menus, handel buttons and labels rendering.
     The first button declared is the bottom one.
     Exactly one button shall be set selected.
@@ -86,8 +105,8 @@ class Menu(ABC):
         background_color: settings.Color,
         is_transparent: bool = False
     ) -> None:
+        super().__init__(game)
         self.canvas: pygame.Surface = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
-        self.game = game
         self.is_transparent = is_transparent
         self.font = pygame.font.Font('font/PixeloidSans.ttf', 30)
         self.bold_font = pygame.font.Font('font/PixeloidSansBold.ttf', 35)
@@ -108,7 +127,8 @@ class Menu(ABC):
         self.game.stack.pop()
 
     def update(self, keys: set[str]) -> None:
-        """ move the selected/focus across buttons """
+        """ move the selected/focus across buttons
+        and apply action if a button is pressed """
         for i, button in enumerate(self.buttons):
             if 'UP' in keys and button.selected and i != len(self.buttons)-1:
                 keys.remove('UP')
@@ -159,18 +179,18 @@ class Menu(ABC):
         source_canvas.blit(canvas, dest=(0, 0))
 
 
-class Gameplay():
+class Gameplay(State):
     """ main part of the game.
     is a state on the stack
     """
     def __init__(self, game) -> None:
-        self.game = game
+        super().__init__(game)
 
         # reset score
         self.game.score = 0
 
         # add itself to the stack
-        self.game.stack.append(self)
+        self.enter_state()
 
         self.canvas = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
         self.playtime_in_frames = 0

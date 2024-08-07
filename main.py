@@ -5,6 +5,7 @@ Licence GPL-3+
 import sys
 import pygame
 import states
+import utils
 import settings
 
 class Game:
@@ -32,16 +33,9 @@ class Game:
         self.clock = pygame.time.Clock()
         self.keys: set[str] = set()
 
-        self.load_highscore()
+        utils.load_highscore()
 
-    def load_highscore(self) -> None:
-        """ attemp to load  the highscore file and store into settings.highscore """
-        try:
-            settings.highscore = settings.read_b64_json_file(file_name='highscore')
-        except FileNotFoundError:
-            # if the file is not found, create it with hiscore 0
-            settings.highscore = {'manu': 0,}
-            settings.write_encode_string(file_name='highscore', data=settings.highscore)
+
 
     def main_loop(self) -> None:
         """ main game loop.

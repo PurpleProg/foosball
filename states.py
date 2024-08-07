@@ -7,17 +7,7 @@ from abc import ABC, abstractmethod
 import pygame
 from entitys import Paddle
 import settings
-
-
-def save(score: float) -> None:
-    """ save the highscore to file """
-    score_data = {
-        'manu': int(score)
-    }
-    score_json: str = json.dumps(score_data)
-    encoded_json: str = base64.b64encode(score_json.encode()).decode()
-    with open(file='highscore', mode='w', encoding='UTF-8') as highscore:
-        highscore.write(encoded_json)
+import utils
 
 
 class State(ABC):
@@ -557,8 +547,8 @@ class Settings(Menu):
         """ force save score to highscore file.
         this is a debug feature.
         """
-        save(score=settings.score)
-        self.game.load_highscore()
+        utils.save(score=settings.score)
+        utils.load_highscore()
 
 
 class Difficulties(Menu):

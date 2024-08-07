@@ -191,22 +191,16 @@ class Menu(State):
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit buttons, labels and a background to the given surface """
+        # backgroud
         if self.is_transparent:
-
-            #  /!\ prev_state dont always have a canvas, only gameplay does
-            canvas.blit(
-                source=self.prev_state.canvas,
-                dest=(0, 0)
-            )
+            self.prev_state.render(canvas=canvas)
             # not optimized but avoid needing to reload the stack every resolution change
-            bg = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
-            bg.fill(self.background_color)
-            bg.set_alpha(settings.TRANSPARENCY_ALPHA)
+            trancparent_background = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
+            trancparent_background.fill(self.background_color)
+            trancparent_background.set_alpha(settings.TRANSPARENCY_ALPHA)
 
-            canvas.blit(source=bg, dest=(0, 0))
-            # canvas.fill(self.background_color)
+            canvas.blit(source=trancparent_background, dest=(0, 0))
         else:
-            # background
             canvas.fill(self.background_color)
 
         # blit the buttons

@@ -2,7 +2,6 @@
 Copyright me
 Licence GPL-3+
 """
-import sys
 import pygame
 import states
 import utils
@@ -24,7 +23,7 @@ class Game:
         self.fullscreen = False
 
         # init the stack
-        self.stack: list[state.State] = []
+        self.stack: list[states.State] = []
         states.Mainmenu(self)
 
         # init global game var
@@ -34,8 +33,6 @@ class Game:
         self.keys: set[str] = set()
 
         utils.load_highscore()
-
-
 
     def main_loop(self) -> None:
         """ main game loop.
@@ -56,15 +53,13 @@ class Game:
             if settings.DEBUG_SCORE:
                 print(f'score : {settings.score}, highscore : {settings.highscore}')
 
-
     def event(self) -> None:
         """get event like keyboard press or mouse input and gather them in a dict"""
         for event in pygame.event.get():
             match event.type:
                 case pygame.QUIT:
                     self.running = False
-                    pygame.quit()
-                    sys.exit()
+                    utils.exit_game()
                 case pygame.KEYDOWN:
                     match event.key:
                         case pygame.K_ESCAPE:

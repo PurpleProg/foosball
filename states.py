@@ -1,19 +1,17 @@
 """ define game states and menus """
-import sys
-import json
-import base64
 from collections.abc import Callable
 from abc import ABC, abstractmethod
 import pygame
 from entitys import Paddle
-import settings
 import utils
+import settings
 
 
 class State(ABC):
     """ abstract class for the state stack """
     def __init__(self, game) -> None:
         self.game = game
+        self.prev_state: State
 
     @abstractmethod
     def update(self, keys: set[str]) -> None:
@@ -57,30 +55,12 @@ class Gameplay(State):
         # add itself to the stack
         self.enter_state()
 
-        self.playtime_in_frames = 0
-
-        # timer
-        self.countdown_in_frames = settings.COUNTDOWN*settings.FPS
-
         # create objects
         self.paddle = Paddle()
 
     def update(self, keys: set[str]) -> None:
         """ update the balls, powerups and paddle """
         self.paddle.update(keys)
-        # countdown befor start
-        if self.countdown_in_frames:
-            # countdown_in_seconds = self.countdown_in_frames/settings.FPS
-            # if countdown_in_seconds == int(countdown_in_seconds):    # basicly print 3, 2, 1, 0!
-                # print(countdown_in_seconds)
-            self.countdown_in_frames -= 1
-        # main updates
-        else:
-            self.playtime_in_frames += 1
-
-            # update score
-            playtime = self.playtime_in_frames / settings.FPS
-            settings.score = -playtime
 
         # process keys press
         if 'ESCAPE' in keys:
@@ -243,6 +223,7 @@ class Menu(State):
         for label in self.labels:
             label.render(canvas)
 
+
 class Mainmenu(Menu):
     """ this is the first state in the stack """
     def __init__(self, game) -> None:
@@ -255,7 +236,7 @@ class Mainmenu(Menu):
         self.buttons.extend([
             Menu.Button(
                 text='exit',
-                fonction=self.exit_game,
+                fonction=utils.exit_game,
                 font=self.font,
             ),  # exit
             Menu.Button(
@@ -286,11 +267,6 @@ class Mainmenu(Menu):
             pos=(settings.WIDTH//2, settings.HEIGHT//10),
         ))  # main menu
 
-    def exit_game(self) -> None:
-        """ quit pygame and sys.exit() """
-        pygame.quit()
-        sys.exit()
-
     def to_difficulties_choice(self) -> None:
         """ create new Difficulties state """
         Difficulties(self.game)
@@ -317,7 +293,7 @@ class Gameover(Menu):
         # save score
         if settings.score > settings.highscore['manu']:
             settings.highscore['manu'] = settings.score
-            settings.write_encode_string(file_name='highscore', data=settings.highscore)
+            utils.write_encode_string(file_name='highscore', data=settings.highscore)
 
 
         # create buttons
@@ -370,7 +346,7 @@ class Gameover(Menu):
 class Win(Menu):
     """ Win state,
     ave the highscore to file if needed.
-    show playtime, score and highscore
+    show score and highscore
     """
     def __init__(self, game) -> None:
         super().__init__(game, settings.WIN_BACKGROUND_COLOR)
@@ -380,7 +356,7 @@ class Win(Menu):
         # save score
         if settings.score > settings.highscore['manu']:
             settings.highscore['manu'] = settings.score
-            settings.write_encode_string(file_name='highscore', data=settings.highscore)
+            utils.write_encode_string(file_name='highscore', data=settings.highscore)
 
         # create buttons
         self.buttons.append(Menu.Button(
@@ -415,11 +391,6 @@ class Win(Menu):
                 font=self.bold_font,
                 pos=(settings.WIDTH//2, (settings.HEIGHT//16) * 13),
             ),  # highscore
-            Menu.Label(
-                text=f"playtime : {self.prev_state.playtime_in_frames/settings.FPS:.2f}",
-                font=self.bold_font,
-                pos=(settings.WIDTH//2, int(settings.HEIGHT * (15 / 16))),
-            ),  # playtime
         ])
 
     def to_menu(self) -> None:
@@ -480,7 +451,6 @@ class Pause(Menu):
 
     def resume(self) -> None:
         """ after pause restart a counter """
-        self.prev_state.countdown_in_frames = settings.COUNTDOWN*settings.FPS
         self.exit_state()
 
     def to_mainmenu(self) -> None:
@@ -688,4 +658,3 @@ class Resolution(Menu):
         """
         self.game.display = pygame.display.set_mode(size=(1024, 512))
         settings.WIDTH, settings.HEIGHT = 1024, 512
-

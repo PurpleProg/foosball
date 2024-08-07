@@ -1,7 +1,4 @@
 """ Define elements of the game, like a ball """
-import math  # for bounce angle calc
-import random
-from abc import abstractmethod, ABC
 import pygame
 import settings
 
@@ -57,9 +54,9 @@ class Paddle:
         self.rect.centery = int(self.pos.y)
 
         # collide powerups
-        '''for powerup in powerups:
-            if self.rect.colliderect(powerup.rect):
-                powerup.activate()'''
+        # for powerup in powerups:
+            # if self.rect.colliderect(powerup.rect):
+                # powerup.activate()
 
         # prevent paddle from going out of bouds
         # collide with walls
@@ -72,13 +69,13 @@ class Paddle:
             self.rect.left = 0
             self.pos.x = self.rect.centerx
         # y axis
-        '''if self.rect.bottom > settings.HEIGHT:
-            self.rect.bottom = settings.HEIGHT
-            keys.remove('DOWN')
-            self.pos.y = self.rect.centery
-        elif self.rect.top < 0:
-            self.rect.top = 0
-            self.pos.y = self.rect.centery'''
+        # if self.rect.bottom > settings.HEIGHT:
+            # self.rect.bottom = settings.HEIGHT
+            # keys.remove('DOWN')
+            # self.pos.y = self.rect.centery
+        # elif self.rect.top < 0:
+            # self.rect.top = 0
+            # self.pos.y = self.rect.centery
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """

@@ -2,6 +2,7 @@
 import base64
 import json
 from typing import Any
+import sys
 import pygame
 import settings
 
@@ -42,3 +43,9 @@ def save(score: float) -> None:
     encoded_json: str = base64.b64encode(score_json.encode()).decode()
     with open(file='highscore', mode='w', encoding='UTF-8') as highscore_file:
         highscore_file.write(encoded_json)
+
+
+def exit_game() -> None:
+    """ quit pygame and sys.exit() """
+    pygame.quit()
+    sys.exit()

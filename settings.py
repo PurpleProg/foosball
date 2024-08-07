@@ -6,7 +6,8 @@ Color = NewType('Color', str)
 
 # global score
 score: float = 0.0
-highscore: float = score
+# should be overwrited during game init
+highscore: dict[str, float] = {'manu': 0.0}
 
 
 # debugs

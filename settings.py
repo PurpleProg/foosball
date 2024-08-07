@@ -3,7 +3,6 @@ from typing import NewType, Any
 import base64
 import json
 
-
 Color = NewType('Color', str)
 
 
@@ -24,13 +23,19 @@ def write_encode_string(file_name: str, data: Any) -> None:
         file.write(b64_encoded_str)
 
 
+# global score
+score: float = 0.0
+highscore: float = score
+
+
 # debugs
 DEBUG = True
-DEBUG_POS = DEBUG and False
-DEBUG_STACK = DEBUG
+SHOW_HITBOX = DEBUG           #  draw the rect
+SHOW_DIRECTIONS = DEBUG       # draw a line
 INVISIBILITY = DEBUG
-SHOW_HITBOX = DEBUG   #  draw the rect
-SHOW_DIRECTIONS = DEBUG
+DEBUG_POS = DEBUG and False
+DEBUG_STACK = DEBUG           # print stack
+DEBUG_SCORE = DEBUG           # print score and highscore
 
 # screen
 WIDTH = 1024

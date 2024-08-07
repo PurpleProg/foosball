@@ -8,8 +8,9 @@ import states
 import settings
 
 class Game:
-    """ main class of breakout
-    contain some global game var (like display)
+    """ main class of the game
+    get events (keypress)
+    hold the stack
     """
     def __init__(self) -> None:
         pygame.init()
@@ -26,7 +27,7 @@ class Game:
         states.Mainmenu(self)
 
         # init global game var
-        self.score: float = 0.0
+        # self.score: float = 0.0
         self.running: bool = True
         self.clock = pygame.time.Clock()
         self.keys: set[str] = set()
@@ -34,13 +35,13 @@ class Game:
         self.load_highscore()
 
     def load_highscore(self) -> None:
-        """ attemp to load  the highscore file and store into self.highscore """
+        """ attemp to load  the highscore file and store into settings.highscore """
         try:
-            self.highscore = settings.read_b64_json_file(file_name='highscore')
+            settings.highscore = settings.read_b64_json_file(file_name='highscore')
         except FileNotFoundError:
             # if the file is not found, create it with hiscore 0
-            self.highscore = {'manu': 0,}
-            settings.write_encode_string(file_name='highscore', data=self.highscore)
+            settings.highscore = {'manu': 0,}
+            settings.write_encode_string(file_name='highscore', data=settings.highscore)
 
     def main_loop(self) -> None:
         """ main game loop.
@@ -57,6 +58,10 @@ class Game:
                 for state in self.stack:
                     print(f'{type(state).__name__} > ', end='')
                 print()
+            # debug score
+            if settings.DEBUG_SCORE:
+                print(f'score : {settings.score}, highscore : {settings.highscore}')
+
 
     def event(self) -> None:
         """get event like keyboard press or mouse input and gather them in a dict"""

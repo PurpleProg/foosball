@@ -24,9 +24,11 @@ def write_encode_string(file_name: str, data: Any) -> None:
         file.write(b64_encoded_str)
 
 
-# cheats
+# debugs
 DEBUG = True
-INVISIBILITY = DEBUG or True
+DEBUG_POS = DEBUG and False
+DEBUG_STACK = DEBUG
+INVISIBILITY = DEBUG
 SHOW_HITBOX = DEBUG   #  draw the rect
 SHOW_DIRECTIONS = DEBUG
 
@@ -53,6 +55,7 @@ WIN_BACKGROUND_COLOR = Color('#00ff00')
 SETTINGS_BACKGROUND_COLOR = Color('#00ffff')
 HITBOX_COLOR = Color('#ff0000')
 DIRECTION_COLOR = Color('#0000ff')
+TRANSPARENCY_ALPHA = 150
 
 # default font. There also is a bold and a mono variant.
 FONT_NAME = 'font/PixeloidSans.ttf'

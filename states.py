@@ -50,6 +50,64 @@ class State(ABC):
             # idk maybe quit the game ?
             pass
 
+
+class Gameplay(State):
+    """ main part of the game.
+    is a state on the stack
+    """
+    def __init__(self, game) -> None:
+        super().__init__(game)
+
+        # create a canvas for transparensy of menus
+        self.canvas = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
+
+        # reset score
+        self.game.score = 0
+
+        # add itself to the stack
+        self.enter_state()
+
+        self.playtime_in_frames = 0
+
+        # timer
+        self.countdown_in_frames = settings.COUNTDOWN*settings.FPS
+
+        # create objects
+        self.paddle = Paddle()
+
+    def update(self, keys: set[str]) -> None:
+        """ update the balls, powerups and paddle """
+        self.paddle.update(keys)
+        # countdown befor start
+        if self.countdown_in_frames:
+            # countdown_in_seconds = self.countdown_in_frames/settings.FPS
+            # if countdown_in_seconds == int(countdown_in_seconds):    # basicly print 3, 2, 1, 0!
+                # print(countdown_in_seconds)
+            self.countdown_in_frames -= 1
+        # main updates
+        else:
+            self.playtime_in_frames += 1
+
+            # update score
+            playtime = self.playtime_in_frames / settings.FPS
+            self.game.score = -playtime
+
+        # process keys press
+        if 'ESCAPE' in keys:
+            keys.remove('ESCAPE')   # prevente the pause to immediatly quit
+            Pause(self.game)
+        if 'p' in keys:
+            keys.remove('p')
+            Win(self.game)
+
+    def render(self, canvas: pygame.Surface) -> None:
+        """ blit powerups, paddle and balls to the given surface """
+        self.canvas.fill(color=settings.BACKGROUND_COLOR)
+        self.paddle.render(self.canvas)
+
+        canvas.blit(source=self.canvas, dest=(0, 0))
+
+
 class Menu(State):
     """ Parent class of all menus, handel buttons and labels rendering.
     The first button declared is the bottom one.
@@ -117,8 +175,11 @@ class Menu(State):
         is_transparent: bool = False
     ) -> None:
         super().__init__(game)
-        self.canvas: pygame.Surface = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
+        # background
+        self.background_color = background_color
         self.is_transparent = is_transparent
+
+        # font
         self.font = pygame.font.Font('font/PixeloidSans.ttf', 30)
         self.bold_font = pygame.font.Font('font/PixeloidSansBold.ttf', 35)
         self.big_font = pygame.font.Font('font/PixeloidSansBold.ttf', 80)
@@ -126,12 +187,6 @@ class Menu(State):
         # create buttons and labels list for each child
         self.buttons: list[Menu.Button] = []
         self.labels: list[Menu.Label] = []
-
-        # background
-        self.background: pygame.Surface = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
-        self.background.fill(background_color)
-        if self.is_transparent:
-            self.background.set_alpha(150)   # 0 is fully transparent, 255 is fully opaque
 
     def update(self, keys: set[str]) -> None:
         """ move the selected/focus across buttons
@@ -164,16 +219,25 @@ class Menu(State):
                 button.fonction()
                 # break
 
-    def render(self, source_canvas: pygame.Surface) -> None:
+    def render(self, canvas: pygame.Surface) -> None:
         """ blit buttons, labels and a background to the given surface """
         if self.is_transparent:
-            canvas = self.prev_state.canvas.copy()
+
+            #  /!\ prev_state dont always have a canvas, only gameplay does
+            canvas.blit(
+                source=self.prev_state.canvas,
+                dest=(0, 0)
+            )
+            # not optimized but avoid needing to reload the stack every resolution change
+            bg = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
+            bg.fill(self.background_color)
+            bg.set_alpha(settings.TRANSPARENCY_ALPHA)
+
+            canvas.blit(source=bg, dest=(0, 0))
+            # canvas.fill(self.background_color)
         else:
-            canvas = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
-
-        # blit the background
-        canvas.blit(self.background, dest=(0, 0))
-
+            # background
+            canvas.fill(self.background_color)
 
         # blit the buttons
         for i, button in enumerate(self.buttons):
@@ -188,65 +252,6 @@ class Menu(State):
         # blit the labels
         for label in self.labels:
             label.render(canvas)
-
-        source_canvas.blit(canvas, dest=(0, 0))
-
-
-class Gameplay(State):
-    """ main part of the game.
-    is a state on the stack
-    """
-    def __init__(self, game) -> None:
-        super().__init__(game)
-
-        # reset score
-        self.game.score = 0
-
-        # add itself to the stack
-        self.enter_state()
-
-        self.canvas = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
-        self.playtime_in_frames = 0
-
-        # timer
-        self.countdown_in_frames = settings.COUNTDOWN*settings.FPS
-
-        # create objects
-        self.paddle = Paddle()
-
-    def update(self, keys: set[str]) -> None:
-        """ update the balls, powerups and paddle """
-        self.paddle.update(keys)
-        # countdown befor start
-        if self.countdown_in_frames:
-            # countdown_in_seconds = self.countdown_in_frames/settings.FPS
-            # if countdown_in_seconds == int(countdown_in_seconds):    # basicly print 3, 2, 1, 0!
-                # print(countdown_in_seconds)
-            self.countdown_in_frames -= 1
-        # main updates
-        else:
-            self.playtime_in_frames += 1
-
-            # update score
-            playtime = self.playtime_in_frames / settings.FPS
-            self.game.score = -playtime
-
-        # process keys press
-        if 'ESCAPE' in keys:
-            keys.remove('ESCAPE')   # prevente the pause to immediatly quit
-            Pause(self.game)
-        if 'p' in keys:
-            keys.remove('p')
-            Win(self.game)
-
-    def render(self, canvas: pygame.Surface) -> None:
-        """ blit powerups, paddle and balls to the given surface """
-        self.canvas.fill(color=settings.BACKGROUND_COLOR)
-        self.paddle.render(self.canvas)
-
-
-        canvas.blit(self.canvas, dest=(0, 0))
-
 
 class Mainmenu(Menu):
     """ this is the first state in the stack """
@@ -668,7 +673,6 @@ class Resolution(Menu):
     def toggle_fullscreen(self) -> None:
         """ re-set the pygame display,
         update settings screen size
-        and reload the stack
         """
         if self.game.fullscreen:
             self.game.display = pygame.display.set_mode(
@@ -681,15 +685,12 @@ class Resolution(Menu):
             settings.WIDTH, settings.HEIGHT = self.game.display.get_size()
             self.game.fullscreen = True
 
-        self.reload_stack()
-
     def res_512x256(self) -> None:
         """ recreate the pygame display at a given size
         and update settings.WIDTH and settings.HEIGHT
         """
         self.game.display = pygame.display.set_mode(size=(512, 256))
         settings.WIDTH, settings.HEIGHT = 512, 256
-        self.reload_stack()
 
     def res_1024x512(self) -> None:
         """ recreate the pygame display at a given size
@@ -697,16 +698,4 @@ class Resolution(Menu):
         """
         self.game.display = pygame.display.set_mode(size=(1024, 512))
         settings.WIDTH, settings.HEIGHT = 1024, 512
-        self.reload_stack()
 
-    def reload_stack(self) -> None:
-        """ empty the stack and recreate every items """
-
-        # you have to do that to change the sizes of the canvas TO FIX
-        #  >mainmenu>settings>resolution
-        self.exit_state()
-        self.exit_state()
-        self.exit_state()
-        Mainmenu(self.game)
-        Settings(self.game)
-        Resolution(self.game)

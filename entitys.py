@@ -91,7 +91,7 @@ class Paddle:
                 width=1
             )
 
-        if settings.DEBUG:
+        if settings.DEBUG_POS:
             print(f'paddle position : {self.pos.x}, {self.pos.y}')
 
         if settings.SHOW_DIRECTIONS:

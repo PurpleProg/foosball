@@ -52,6 +52,12 @@ class Game:
             self.update()
             self.render()
 
+            # debug stack
+            if settings.DEBUG_STACK:
+                for state in self.stack:
+                    print(f'{type(state).__name__} > ', end='')
+                print()
+
     def event(self) -> None:
         """get event like keyboard press or mouse input and gather them in a dict"""
         for event in pygame.event.get():

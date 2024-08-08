@@ -3,7 +3,6 @@ import pygame
 import settings
 
 
-
 class Paddle:
     """ move with keys, collide with walls and powerups """
     def __init__(self) -> None:
@@ -55,12 +54,12 @@ class Paddle:
 
         # collide powerups
         # for powerup in powerups:
-            # if self.rect.colliderect(powerup.rect):
-                # powerup.activate()
+        #    if self.rect.colliderect(powerup.rect):
+        #       powerup.activate()
 
-        # prevent paddle from going out of bouds
+        # prevent paddle from going out of bounds
         # collide with walls
-        # x axis
+        # x-axis
         if self.rect.right > settings.WIDTH:
             self.rect.right = settings.WIDTH
             keys.remove('RIGHT')
@@ -68,7 +67,7 @@ class Paddle:
         elif self.rect.left < 0:
             self.rect.left = 0
             self.pos.x = self.rect.centerx
-        # y axis
+        # y-axis
         # if self.rect.bottom > settings.HEIGHT:
             # self.rect.bottom = settings.HEIGHT
             # keys.remove('DOWN')

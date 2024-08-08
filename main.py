@@ -7,6 +7,7 @@ import states
 import utils
 import settings
 
+
 class Game:
     """ main class of the game
     get events (keypress)
@@ -68,10 +69,10 @@ class Game:
                             self.keys.add('RETURN')
                         case pygame.K_UP:
                             self.keys.add('UP')
-                            #print('up')
+                            # print('up')
                         case pygame.K_DOWN:
                             self.keys.add('DOWN')
-                            #print('down')
+                            # print('down')
                         case pygame.K_RIGHT:
                             self.keys.add('RIGHT')
                         case pygame.K_LEFT:
@@ -96,7 +97,7 @@ class Game:
                             self.keys.discard('p')
 
     def update(self) -> None:
-        """ update the last gamestate in the stack """
+        """ update the last game state in the stack """
         self.stack[-1].update(self.keys)
 
     def render(self) -> None:

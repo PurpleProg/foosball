@@ -6,13 +6,13 @@ Color = NewType('Color', str)
 
 # global score
 score: float = 0.0
-# should be overwrited during game init
+# should be overwritten during game init
 highscore: dict[str, float] = {'manu': 0.0}
 
 
 # debugs
 DEBUG = True
-SHOW_HITBOX = DEBUG           #  draw the rect
+SHOW_HITBOX = DEBUG           # draw the rect
 SHOW_DIRECTIONS = DEBUG       # draw a line
 INVISIBILITY = DEBUG
 DEBUG_POS = DEBUG and False
@@ -29,7 +29,7 @@ FPS = 60
 WIDTH_BACKUP = WIDTH
 HEIGHT_BACKUP = HEIGHT
 
-COUNTDOWN = 1 # number of second before the gameplay start
+COUNTDOWN = 1  # number of second before the gameplay start
 
 APPROX_CORNER_COLLISION = 10
 
@@ -56,7 +56,7 @@ MAX_BALLS = 10
 
 BALL_RADIUS = 8
 
-# those are change for each difficulties, default is normal difficultie.
+# those are change for each difficulty, default is normal difficulty.
 ####################################################################
 POWERUP_BIG_PADLLE_DURATION = 10  # in second
 POWERUP_SPEED = 2

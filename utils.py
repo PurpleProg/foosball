@@ -1,4 +1,4 @@
-""" utils fonctions """
+""" utils functions """
 import base64
 import json
 from typing import Any
@@ -25,12 +25,12 @@ def write_encode_string(file_name: str, data: Any) -> None:
 
 
 def load_highscore() -> None:
-    """ attemp to load  the highscore file and store into settings.highscore """
+    """ attempt to load  the highscore file and store into settings.highscore """
     try:
         settings.highscore = read_b64_json_file(file_name='highscore')
     except FileNotFoundError:
         # if the file is not found, create it with hiscore 0
-        settings.highscore = {'manu': 0,}
+        settings.highscore = {'manu': 0, }
         write_encode_string(file_name='highscore', data=settings.highscore)
 
 

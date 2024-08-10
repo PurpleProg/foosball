@@ -9,7 +9,7 @@ import settings
 
 class Paddle:
     """ move with keys, collide with walls and powerups """
-    def __init__(self, game) -> None:
+    def __init__(self, game, player) -> None:
         super().__init__()
 
         self.game = game
@@ -25,10 +25,18 @@ class Paddle:
             surface=self.image,
             angle=90,
         )
-        self.pos: pygame.Vector2 = pygame.Vector2(
-            x=settings.WIDTH / 10,
-            y=settings.HEIGHT / 2
-        )  # center the paddle on x and 10% of height on y
+
+        self.player=player
+        if self.player == 1:
+            self.pos: pygame.Vector2 = pygame.Vector2(
+                x=settings.WIDTH / 10,
+                y=settings.HEIGHT - (settings.HEIGHT / 2)
+                )  # center the paddle on x and 10% of height on y
+        elif self.player == 2:
+            self.pos: pygame.Vector2 = pygame.Vector2(
+                x=settings.WIDTH - settings.WIDTH / 10,
+                y=settings.HEIGHT - (settings.HEIGHT / 2)
+                )  # center the paddle on x and 10% of height on y
 
         self.rect: pygame.Rect = self.image.get_rect()
         self.rect.centerx = int(self.pos.x)

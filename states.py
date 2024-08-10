@@ -179,11 +179,13 @@ class Gameplay():
         self.countdown_in_frames = settings.COUNTDOWN*settings.FPS
 
         # create objects
-        self.paddle = Paddle(self.game)
+        self.paddle1 = Paddle(self.game,1)
+        self.paddle2 = Paddle(self.game,2)
 
     def update(self) -> None:
         """ update the balls, powerups and paddle """
-        self.paddle.update([])
+        self.paddle1.update([])
+        self.paddle2.update([])
         # countdown befor start
         if self.countdown_in_frames:
             # countdown_in_seconds = self.countdown_in_frames/settings.FPS
@@ -209,8 +211,8 @@ class Gameplay():
     def render(self, canvas: pygame.Surface) -> None:
         """ blit powerups, paddle and balls to the given surface """
         self.canvas.fill(color=settings.BACKGROUND_COLOR)
-        self.paddle.render(self.canvas)
-
+        self.paddle1.render(self.canvas)
+        self.paddle2.render(self.canvas)
 
         canvas.blit(self.canvas, dest=(0, 0))
 

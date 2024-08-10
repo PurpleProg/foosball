@@ -166,7 +166,7 @@ class Ball:
 
 class Paddle:
     """ move with keys, collide with walls and powerups """
-    def __init__(self, game) -> None:
+    def __init__(self, game, player) -> None:
         super().__init__()
 
         self.game = game
@@ -178,10 +178,18 @@ class Paddle:
             file='assets/Paddles/Style B/Paddle_B_Purple_128x28.png'
         ).convert()
         self.image.set_colorkey('#ff00ff')
-        self.pos: pygame.Vector2 = pygame.Vector2(
-            x=settings.WIDTH / 2,
-            y=settings.HEIGHT - (settings.HEIGHT / 10)
-        )  # center the paddle on x and 10% of height on y
+        
+        self.player=player
+        if self.player == 1:
+            self.pos: pygame.Vector2 = pygame.Vector2(
+                x=settings.WIDTH / 2,
+                y=settings.HEIGHT - (settings.HEIGHT / 10)
+                )  # center the paddle on x and 10% of height on y
+        elif self.player == 2:
+            self.pos: pygame.Vector2 = pygame.Vector2(
+                x=settings.WIDTH / 2,
+                y=settings.HEIGHT - (settings.HEIGHT + 10)
+                )  # center the paddle on x and 10% of height on y
 
         self.rect: pygame.Rect = self.image.get_rect()
         self.rect.centerx = int(self.pos.x)

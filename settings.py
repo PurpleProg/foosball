@@ -17,7 +17,7 @@ SHOW_DIRECTIONS = DEBUG       # draw a line
 INVISIBILITY = DEBUG
 DEBUG_POS = DEBUG and False
 DEBUG_STACK = DEBUG           # print stack
-DEBUG_SCORE = DEBUG           # print score and highscore
+DEBUG_SCORE = DEBUG and False          # print score and highscore
 
 # screen
 WIDTH = 1024

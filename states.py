@@ -40,46 +40,6 @@ class State(ABC):
             pass
 
 
-class Gameplay(State):
-    """ main part of the game.
-    is a state on the stack
-    """
-
-    def __init__(self, game) -> None:
-        super().__init__(game)
-
-        # create a canvas for transparency of menus
-        self.canvas = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
-
-        # reset score
-        settings.score = 0
-
-        # add itself to the stack
-        self.enter_state()
-
-        # create objects
-        self.paddle = Paddle()
-
-    def update(self, keys: set[str]) -> None:
-        """ update the balls and paddle """
-        self.paddle.update(keys)
-
-        # process keys press
-        if 'ESCAPE' in keys:
-            keys.remove('ESCAPE')  # prevent the pause to immediately quit
-            Pause(self.game)
-        if 'p' in keys:
-            keys.remove('p')
-            Win(self.game)
-
-    def render(self, canvas: pygame.Surface) -> None:
-        """ blit paddle and balls to the given surface """
-        self.canvas.fill(color=settings.BACKGROUND_COLOR)
-        self.paddle.render(self.canvas)
-
-        canvas.blit(source=self.canvas, dest=(0, 0))
-
-
 class Menu(State):
     """ Parent class of all menus, handel buttons and labels rendering.
     The first button declared is the bottom one.
@@ -221,23 +181,20 @@ class Menu(State):
         for label in self.labels:
             label.render(canvas)
 
-        source_canvas.blit(canvas, dest=(0, 0))
 
-
-class Gameplay():
+class Gameplay(State):
     """ main part of the game.
     is a state on the stack
     """
     def __init__(self, game) -> None:
-        self.game = game
+        super().__init__(game)
 
         # reset score
-        self.game.score = 0
+        settings.score = 0
 
         # add itself to the stack
-        self.game.stack.append(self)
+        self.enter_state()
 
-        self.canvas = pygame.Surface(size=(settings.WIDTH, settings.HEIGHT))
         self.playtime_in_frames = 0
 
         # timer
@@ -247,10 +204,11 @@ class Gameplay():
         self.paddle1 = Paddle(self.game,1)
         self.paddle2 = Paddle(self.game,2)
 
-    def update(self) -> None:
+    def update(self, keys: set[str]) -> None:
         """ update the balls, powerups and paddle """
-        self.paddle1.update([])
-        self.paddle2.update([])
+        self.paddle1.update(keys=keys)
+        self.paddle2.update(keys=keys)
+
         # countdown befor start
         if self.countdown_in_frames:
             # countdown_in_seconds = self.countdown_in_frames/settings.FPS
@@ -264,22 +222,20 @@ class Gameplay():
             # update score
             playtime = self.playtime_in_frames / settings.FPS
             self.game.score = -playtime
- 
+
         # process keys press
-        if self.game.keys['ESCAPE']:
-            self.game.keys['ESCAPE'] = False   # prevente the pause to immediatly quit
-            Pause(self.game, self)
-        if self.game.keys['p']:
-            self.game.keys['p'] = False
+        if 'ESCAPE' in keys:
+            keys.remove('ESCAPE')  # prevent the pause to immediately quit
+            Pause(self.game)
+        if 'p' in keys:
+            keys.remove('p')
             Win(self.game)
 
     def render(self, canvas: pygame.Surface) -> None:
-        """ blit powerups, paddle and balls to the given surface """
-        self.canvas.fill(color=settings.BACKGROUND_COLOR)
-        self.paddle1.render(self.canvas)
-        self.paddle2.render(self.canvas)
-
-        canvas.blit(self.canvas, dest=(0, 0))
+        """ blit paddles to the given surface """
+        canvas.fill(color=settings.BACKGROUND_COLOR)
+        self.paddle1.render(canvas)
+        self.paddle2.render(canvas)
 
 
 class Mainmenu(Menu):

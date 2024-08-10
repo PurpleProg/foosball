@@ -1,18 +1,12 @@
 """ Define elements of the game, like a ball """
-import math  # for bounce angle calc
-import random
-from abc import abstractmethod, ABC
 import pygame
 import settings
-
 
 
 class Paddle:
     """ move with keys, collide with walls and powerups """
     def __init__(self, game, player) -> None:
         super().__init__()
-
-        self.game = game
 
         self.speed = settings.PADDLE_SPEED
         self.direction = pygame.Vector2(0, 0)
@@ -42,21 +36,19 @@ class Paddle:
         self.rect.centerx = int(self.pos.x)
         self.rect.centery = int(self.pos.y)
 
-    def update(self, powerups: list) -> None:
+    def update(self, keys: set[str]) -> None:
         """ change the direction, move and collide """
         # update direction with arrows
-        if self.game.keys['RIGHT']:
+        if 'RIGHT' in keys:
             self.direction.x = 1
-        elif self.game.keys['LEFT']:
+        elif 'LEFT' in keys:
             self.direction.x = -1
         else:
             self.direction.x = 0
-        if self.game.keys['UP']:
+        if 'UP' in keys:
             self.direction.y = -1
-            print('up')
-        elif self.game.keys['DOWN']:
+        elif 'DOWN' in keys:
             self.direction.y = 1
-            print ('down')
         else:
             self.direction.y = 0
 
@@ -69,28 +61,28 @@ class Paddle:
         self.rect.centery = int(self.pos.y)
 
         # collide powerups
-        '''for powerup in powerups:
-            if self.rect.colliderect(powerup.rect):
-                powerup.activate()'''
+        # for powerup in powerups:
+        #    if self.rect.colliderect(powerup.rect):
+        #       powerup.activate()
 
-        # prevent paddle from going out of bouds
+        # prevent paddle from going out of bounds
         # collide with walls
-        # x axis
+        # x-axis
         if self.rect.right > settings.WIDTH:
             self.rect.right = settings.WIDTH
-            self.game.keys['RIGHT'] = False
+            keys.remove('RIGHT')
             self.pos.x = self.rect.centerx
         elif self.rect.left < 0:
             self.rect.left = 0
             self.pos.x = self.rect.centerx
-        # y axis
-        '''if self.rect.bottom > settings.HEIGHT:
-            self.rect.bottom = settings.HEIGHT
-            self.game.keys['DOWN'] = False
-            self.pos.y = self.rect.centery
-        elif self.rect.top < 0:
-            self.rect.top = 0
-            self.pos.y = self.rect.centery'''
+        # y-axis
+        # if self.rect.bottom > settings.HEIGHT:
+            # self.rect.bottom = settings.HEIGHT
+            # keys.remove('DOWN')
+            # self.pos.y = self.rect.centery
+        # elif self.rect.top < 0:
+            # self.rect.top = 0
+            # self.pos.y = self.rect.centery
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """
@@ -102,7 +94,10 @@ class Paddle:
                 rect=self.rect,
                 width=1
             )
-        print(self.pos.x,self.pos.y)
+
+        if settings.DEBUG_POS:
+            print(f'paddle position : {self.pos.x}, {self.pos.y}')
+
         if settings.SHOW_DIRECTIONS:
             pygame.draw.line(
                 surface=canvas,

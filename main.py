@@ -2,14 +2,16 @@
 Copyright me
 Licence GPL-3+
 """
-import sys
 import pygame
 import states
+import utils
 import settings
 
+
 class Game:
-    """ main class of breakout
-    contain some global game var (like display)
+    """ main class of the game
+    get events (keypress)
+    hold the stack
     """
     def __init__(self) -> None:
         pygame.init()
@@ -22,33 +24,16 @@ class Game:
         self.fullscreen = False
 
         # init the stack
-        self.stack: list[states.Menu | states.Gameplay] = []
+        self.stack: list[states.State] = []
         states.Mainmenu(self)
 
         # init global game var
-        self.score: float = 0.0
+        # self.score: float = 0.0
         self.running: bool = True
         self.clock = pygame.time.Clock()
-        self.keys: dict[str, bool] = {
-            'ESCAPE': False,
-            'RETURN': False,
-            'UP': False,
-            'DOWN': False,
-            'RIGHT': False,
-            'LEFT': False,
-            'p': False,
-        }
+        self.keys: set[str] = set()
 
-        self.load_highscore()
-
-    def load_highscore(self) -> None:
-        """ attemp to load  the highscore file and store into self.highscore """
-        try:
-            self.highscore = settings.read_b64_json_file(file_name='highscore')
-        except FileNotFoundError:
-            # if the file is not found, create it with hiscore 0
-            self.highscore = {'manu': 0,}
-            settings.write_encode_string(file_name='highscore', data=self.highscore)
+        utils.load_highscore()
 
     def main_loop(self) -> None:
         """ main game loop.
@@ -60,52 +45,60 @@ class Game:
             self.update()
             self.render()
 
+            # debug stack
+            if settings.DEBUG_STACK:
+                for state in self.stack:
+                    print(f'{type(state).__name__} > ', end='')
+                print()
+            # debug score
+            if settings.DEBUG_SCORE:
+                print(f'score : {settings.score}, highscore : {settings.highscore}')
+
     def event(self) -> None:
         """get event like keyboard press or mouse input and gather them in a dict"""
         for event in pygame.event.get():
             match event.type:
                 case pygame.QUIT:
                     self.running = False
-                    pygame.quit()
-                    sys.exit()
+                    utils.exit_game()
                 case pygame.KEYDOWN:
                     match event.key:
                         case pygame.K_ESCAPE:
-                            self.keys['ESCAPE'] = True
+                            self.keys.add('ESCAPE')
                         case pygame.K_RETURN:
-                            self.keys['RETURN'] = True
+                            self.keys.add('RETURN')
                         case pygame.K_UP:
-                            self.keys['UP'] = True
-                            #print('up')
+                            self.keys.add('UP')
+                            # print('up')
                         case pygame.K_DOWN:
-                            self.keys['DOWN'] = True
-                            #print('down')
+                            self.keys.add('DOWN')
+                            # print('down')
                         case pygame.K_RIGHT:
-                            self.keys['RIGHT'] = True
+                            self.keys.add('RIGHT')
                         case pygame.K_LEFT:
-                            self.keys['LEFT'] = True
+                            self.keys.add('LEFT')
                         case pygame.K_p:
-                            self.keys['p'] = True
+                            self.keys.add('p')
                 case pygame.KEYUP:
                     match event.key:
                         case pygame.K_ESCAPE:
-                            self.keys['ESCAPE'] = False
+                            self.keys.discard('ESCAPE')
                         case pygame.K_RETURN:
-                            self.keys['RETURN'] = False
+                            self.keys.discard('RETURN')
                         case pygame.K_UP:
-                            self.keys['UP'] = False
+                            self.keys.discard('UP')
                         case pygame.K_DOWN:
-                            self.keys['DOWN'] = False
+                            self.keys.discard('DOWN')
                         case pygame.K_RIGHT:
-                            self.keys['RIGHT'] = False
+                            self.keys.discard('RIGHT')
                         case pygame.K_LEFT:
-                            self.keys['LEFT'] = False
+                            self.keys.discard('LEFT')
                         case pygame.K_p:
-                            self.keys['p'] = False
+                            self.keys.discard('p')
 
     def update(self) -> None:
-        """ update the last gamestate in the stack """
-        self.stack[-1].update()
+        """ update the last game state in the stack """
+        self.stack[-1].update(self.keys)
 
     def render(self) -> None:
         """ render last state in stack, update screen and limit FPS."""

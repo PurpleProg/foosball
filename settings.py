@@ -1,34 +1,23 @@
 """ constants and global var """
-from typing import NewType, Any
-import base64
-import json
-
+from typing import NewType
 
 Color = NewType('Color', str)
 
 
-def read_b64_json_file(file_name: str) -> Any:
-    """ read a json b64 encoded text file
-    return a python object """
-    with open(file=file_name, mode='r', encoding='UTF-8') as file:
-        b64_encoded = file.read()
-        json_string = base64.b64decode(b64_encoded.encode()).decode()
-        return json.loads(json_string)
+# global score
+score: float = 0.0
+# should be overwritten during game init
+highscore: dict[str, float] = {'manu': 0.0}
 
 
-def write_encode_string(file_name: str, data: Any) -> None:
-    """ encode a string in json then in b64 and write it to file """
-    with open(file=file_name, mode='w', encoding='UTF-8') as file:
-        json_data = json.dumps(data)
-        b64_encoded_str: str = base64.b64encode(json_data.encode()).decode()
-        file.write(b64_encoded_str)
-
-
-# cheats
+# debugs
 DEBUG = True
-INVISIBILITY = DEBUG or True
-SHOW_HITBOX = DEBUG   #  draw the rect
-SHOW_DIRECTIONS = DEBUG
+SHOW_HITBOX = DEBUG           # draw the rect
+SHOW_DIRECTIONS = DEBUG       # draw a line
+INVISIBILITY = DEBUG
+DEBUG_POS = DEBUG and False
+DEBUG_STACK = DEBUG           # print stack
+DEBUG_SCORE = DEBUG           # print score and highscore
 
 # screen
 WIDTH = 1024
@@ -40,7 +29,7 @@ FPS = 60
 WIDTH_BACKUP = WIDTH
 HEIGHT_BACKUP = HEIGHT
 
-COUNTDOWN = 1 # number of second before the gameplay start
+COUNTDOWN = 1  # number of second before the gameplay start
 
 APPROX_CORNER_COLLISION = 10
 
@@ -53,6 +42,7 @@ WIN_BACKGROUND_COLOR = Color('#00ff00')
 SETTINGS_BACKGROUND_COLOR = Color('#00ffff')
 HITBOX_COLOR = Color('#ff0000')
 DIRECTION_COLOR = Color('#0000ff')
+TRANSPARENCY_ALPHA = 150
 
 # default font. There also is a bold and a mono variant.
 FONT_NAME = 'font/PixeloidSans.ttf'
@@ -66,7 +56,7 @@ MAX_BALLS = 10
 
 BALL_RADIUS = 8
 
-# those are change for each difficulties, default is normal difficultie.
+# those are change for each difficulty, default is normal difficulty.
 ####################################################################
 POWERUP_BIG_PADLLE_DURATION = 10  # in second
 POWERUP_SPEED = 2

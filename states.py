@@ -192,9 +192,10 @@ class Gameplay(State):
         # reset score
         settings.score['RIGHT'] = 0
         settings.score['LEFT'] = 0
+        self.last_score = (settings.score['LEFT'],settings.score['RIGHT'])
 
         self.score_font = pygame.font.Font('font/PixeloidSansBold.ttf', 50)
-        self.score_image = self.score_font.render('score', False, '#000000')
+        self.score_image = self.score_font.render('score', False, '#FFFFFF')
 
         # add itself to the stack
         self.enter_state()
@@ -219,7 +220,7 @@ class Gameplay(State):
 
     def update(self, keys: set[str]) -> None:
         """ update the balls, powerups and paddle """
-
+        print (self.last_score, settings.score)
         # update the paddles
         for paddle in self.paddles:
             paddle.update(keys=keys)
@@ -227,10 +228,14 @@ class Gameplay(State):
 
         self.ball.update(self.paddles)
 
-        '''self.score_image = self.score_font.render(
-            f'{settings.score['LEFT']}-{settings.score['RIGHT']}', False, settings.SCORE_COLOR
-        )'''
-
+        if self.last_score != (settings.score['LEFT'],settings.score['RIGHT']):
+            self.score_image = self.score_font.render(
+                f'{settings.score['LEFT']}-{settings.score['RIGHT']}', False, settings.SCORE_COLOR
+            )
+            self.last_score = settings.score
+        
+        
+        
 
         # process keys press
         if 'ESCAPE' in keys:
@@ -259,6 +264,7 @@ class Gameplay(State):
             paddle.render(canvas=canvas)
 
         # blit score label
+
         canvas.blit(
             source=self.score_image,
             dest=(

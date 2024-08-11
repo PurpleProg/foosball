@@ -170,10 +170,10 @@ class Menu(State):
         # blit the buttons
         for i, button in enumerate(self.buttons):
             # center this shit was a pain in the ass
-            x = settings.WIDTH // 2 - button.FRect.width // 2
+            x = settings.WIDTH // 2 - button.frect.width // 2
             y = (
-                    (settings.HEIGHT // 2 - (button.FRect.height // 2) * ((3 * i) + 1)) +
-                    (len(self.buttons) // 2) * button.FRect.height
+                    (settings.HEIGHT // 2 - (button.frect.height // 2) * ((3 * i) + 1)) +
+                    (len(self.buttons) // 2) * button.frect.height
             )
             button.render(canvas, (x, y))
 

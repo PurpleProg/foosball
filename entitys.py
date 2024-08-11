@@ -146,10 +146,10 @@ class Ball:
     def collide_with_paddle(self, paddles: list[Paddle]) -> None:
         """ bounce on paddle, calculate bounce angle """
         for paddle in paddles:
-            if self.frect.colliderect(paddle.FRect):
+            if self.frect.colliderect(paddle.frect):
                 # calculate angle
-                distance = self.frect.centery - paddle.FRect.centery
-                normalized_distance = distance/(paddle.FRect.height/2)
+                distance = self.frect.centery - paddle.frect.centery
+                normalized_distance = distance/(paddle.frect.height/2)
                 bounce_angle = settings.MAX_BOUNCE_ANGLE * normalized_distance
                 bounce_angle_in_radian = math.radians(bounce_angle)
 

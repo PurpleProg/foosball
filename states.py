@@ -223,7 +223,6 @@ class Gameplay(State):
 
     def update(self, keys: set[str]) -> None:
         """ update the balls, powerups and paddle """
-        print (self.last_score, settings.score)
         # update the paddles
         for paddle in self.paddles:
             paddle.update(keys=keys)

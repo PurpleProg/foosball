@@ -196,6 +196,9 @@ class Gameplay(State):
 
         self.score_font = pygame.font.Font('font/PixeloidSansBold.ttf', 50)
         self.score_image = self.score_font.render('score', False, '#FFFFFF')
+        self.score_image = self.score_font.render(
+            f'{settings.score['LEFT']}-{settings.score['RIGHT']}', False, settings.SCORE_COLOR
+            )
 
         # add itself to the stack
         self.enter_state()

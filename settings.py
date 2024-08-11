@@ -11,13 +11,14 @@ highscore: dict[str, float] = {'manu': 0.0}
 
 
 # debugs
+CHEATS = True
 DEBUG = True
 SHOW_HITBOX = DEBUG           # draw the rect
 SHOW_DIRECTIONS = DEBUG       # draw a line
-INVISIBILITY = DEBUG
-DEBUG_POS = DEBUG and False
-DEBUG_STACK = DEBUG           # print stack
-DEBUG_SCORE = DEBUG and False          # print score and highscore
+INVISIBILITY = CHEATS      # dont die
+DEBUG_POS = False
+DEBUG_STACK = False           # print stack
+DEBUG_SCORE = False          # print score and highscore
 
 # screen
 WIDTH = 1024
@@ -41,7 +42,6 @@ class P1Keys:
     LEFT = 'a'
     UP = 'w'
     DOWN = 's'
-
 
 class P2Keys:
     """ hold the keybinds of the player 2 """
@@ -87,5 +87,5 @@ POWERUP_BALL_CHANCE = 5
 
 MAX_BOUNCE_ANGLE = 60
 
-BALL_SPEED = 5
+BALL_SPEED = 7
 PADDLE_SPEED = 8

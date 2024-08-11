@@ -2,7 +2,7 @@
 from collections.abc import Callable
 from abc import ABC, abstractmethod
 import pygame
-from entitys import Paddle
+from entitys import Paddle, Ball
 import utils
 import settings
 
@@ -213,37 +213,40 @@ class Gameplay(State):
             keybinds=settings.P2Keys,
         ))
 
+        self.ball = Ball(pos=pygame.Vector2(settings.WIDTH/2, settings.HEIGHT/2))
+
     def update(self, keys: set[str]) -> None:
         """ update the balls, powerups and paddle """
+
         # update the paddles
         for paddle in self.paddles:
             paddle.update(keys=keys)
 
-        # countdown befor start
-        if self.countdown_in_frames:
-            # countdown_in_seconds = self.countdown_in_frames/settings.FPS
-            # if countdown_in_seconds == int(countdown_in_seconds):    # basicly print 3, 2, 1, 0!
-                # print(countdown_in_seconds)
-            self.countdown_in_frames -= 1
-        # main updates
-        else:
-            self.playtime_in_frames += 1
 
-            # update score
-            playtime = self.playtime_in_frames / settings.FPS
-            self.game.score = -playtime
+        self.ball.update(self.paddles)
+
 
         # process keys press
         if 'ESCAPE' in keys:
             keys.remove('ESCAPE')  # prevent the pause to immediately quit
             Pause(self.game)
-        if 'p' in keys:
+        if 'p' in keys and settings.CHEATS:
             keys.remove('p')
             Win(self.game)
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit paddles to the given surface """
         canvas.fill(color=settings.BACKGROUND_COLOR)
+
+        if settings.SHOW_HITBOX:
+            pygame.draw.line(
+            surface=canvas,
+            color='#ff0000',
+            start_pos=(settings.WIDTH / 2, 0),
+            end_pos=(settings.WIDTH / 2, settings.HEIGHT)
+        )
+
+        self.ball.render(canvas=canvas)
 
         # render the paddles
         for paddle in self.paddles:

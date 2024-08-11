@@ -227,9 +227,9 @@ class Gameplay(State):
 
         self.ball.update(self.paddles)
 
-        self.score_image = self.score_font.render(
+        '''self.score_image = self.score_font.render(
             f'{settings.score['LEFT']}-{settings.score['RIGHT']}', False, settings.SCORE_COLOR
-        )
+        )'''
 
 
         # process keys press

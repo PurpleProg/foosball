@@ -86,6 +86,7 @@ class Ball:
     def __init__(self, pos: tuple[float, float]) -> None:
         super().__init__()
 
+        self.score_font = pygame.font.Font('font/PixeloidSansBold.ttf', 50)
         self.speed: int = settings.BALL_SPEED
         self.direction: pygame.Vector2 = pygame.Vector2(
             x=random.uniform(-1, 1),
@@ -145,6 +146,9 @@ class Ball:
                 settings.score['LEFT'] += 1
                 self.direction.y = 0
                 self.direction.x = 1
+        self.score_image = self.score_font.render(
+            f'{settings.score['LEFT']}-{settings.score['RIGHT']}', False, settings.SCORE_COLOR
+        )
 
         # ceiling
         if self.frect.top < 0:

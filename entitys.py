@@ -88,7 +88,7 @@ class Ball:
 
         self.speed: int = settings.BALL_SPEED
         self.direction: pygame.Vector2 = pygame.Vector2(
-            x=random.uniform(-1, 1),
+            x=random.choice([-1, 1]),
             y=0)
 
         self.image: pygame.Surface = pygame.image.load(

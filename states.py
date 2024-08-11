@@ -193,6 +193,9 @@ class Gameplay(State):
         settings.score['RIGHT'] = 0
         settings.score['LEFT'] = 0
 
+        self.score_font = pygame.font.Font('font/PixeloidSansBold.ttf', 50)
+        self.score_image = self.score_font.render('score', False, '#000000')
+
         # add itself to the stack
         self.enter_state()
 
@@ -224,6 +227,10 @@ class Gameplay(State):
 
         self.ball.update(self.paddles)
 
+        self.score_image = self.score_font.render(
+            f'{settings.score['LEFT']}-{settings.score['RIGHT']}', False, settings.SCORE_COLOR
+        )
+
 
         # process keys press
         if 'ESCAPE' in keys:
@@ -250,6 +257,15 @@ class Gameplay(State):
         # render the paddles
         for paddle in self.paddles:
             paddle.render(canvas=canvas)
+
+        # blit score label
+        canvas.blit(
+            source=self.score_image,
+            dest=(
+                (settings.WIDTH/2) - (self.score_image.width/2),
+                self.score_image.height + 20
+            )
+        )
 
 
 class Mainmenu(Menu):

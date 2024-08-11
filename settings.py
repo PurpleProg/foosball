@@ -66,6 +66,7 @@ SETTINGS_BACKGROUND_COLOR = Color('#00ffff')
 HITBOX_COLOR = Color('#ff0000')
 DIRECTION_COLOR = Color('#0000ff')
 TRANSPARENCY_ALPHA = 150
+SCORE_COLOR = '#ffffff'
 
 # default font. There also is a bold and a mono variant.
 FONT_NAME = 'font/PixeloidSans.ttf'

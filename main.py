@@ -79,6 +79,14 @@ class Game:
                             self.keys.add('LEFT')
                         case pygame.K_p:
                             self.keys.add('p')
+                        case pygame.K_a:
+                            self.keys.add('a')
+                        case pygame.K_d:
+                            self.keys.add('d')
+                        case pygame.K_s:
+                            self.keys.add('s')
+                        case pygame.K_w:
+                            self.keys.add('w')
                 case pygame.KEYUP:
                     match event.key:
                         case pygame.K_ESCAPE:
@@ -95,6 +103,14 @@ class Game:
                             self.keys.discard('LEFT')
                         case pygame.K_p:
                             self.keys.discard('p')
+                        case pygame.K_a:
+                            self.keys.discard('a')
+                        case pygame.K_d:
+                            self.keys.discard('d')
+                        case pygame.K_s:
+                            self.keys.discard('s')
+                        case pygame.K_w:
+                            self.keys.discard('w')
 
     def update(self) -> None:
         """ update the last game state in the stack """

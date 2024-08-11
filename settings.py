@@ -33,6 +33,24 @@ COUNTDOWN = 1  # number of second before the gameplay start
 
 APPROX_CORNER_COLLISION = 10
 
+
+# keys
+class P1Keys:
+    """ hold the keybinds of the player 1 """
+    RIGHT = 'd'
+    LEFT = 'a'
+    UP = 'w'
+    DOWN = 's'
+
+
+class P2Keys:
+    """ hold the keybinds of the player 2 """
+    RIGHT = 'RIGHT'
+    LEFT = 'LEFT'
+    UP = 'UP'
+    DOWN = 'DOWN'
+
+
 # BACKGROUND COLORS
 BACKGROUND_COLOR = Color('#000000')  # to replace with assets
 PAUSE_BACKGROUND_COLOR = Color('#ffff00')

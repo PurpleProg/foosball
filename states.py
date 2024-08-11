@@ -201,13 +201,23 @@ class Gameplay(State):
         self.countdown_in_frames = settings.COUNTDOWN*settings.FPS
 
         # create objects
-        self.paddle1 = Paddle(self.game,1)
-        self.paddle2 = Paddle(self.game,2)
+        self.paddles: list[Paddle] = []
+        self.paddles.append(Paddle(
+            self.game,
+            pos=pygame.Vector2(settings.WIDTH / 10, settings.HEIGHT / 2),
+            keybinds=settings.P1Keys,
+        ))
+        self.paddles.append(Paddle(
+            self.game,
+            pos=pygame.Vector2(settings.WIDTH * 0.9, settings.HEIGHT / 2),
+            keybinds=settings.P2Keys,
+        ))
 
     def update(self, keys: set[str]) -> None:
         """ update the balls, powerups and paddle """
-        self.paddle1.update(keys=keys)
-        self.paddle2.update(keys=keys)
+        # update the paddles
+        for paddle in self.paddles:
+            paddle.update(keys=keys)
 
         # countdown befor start
         if self.countdown_in_frames:
@@ -234,8 +244,10 @@ class Gameplay(State):
     def render(self, canvas: pygame.Surface) -> None:
         """ blit paddles to the given surface """
         canvas.fill(color=settings.BACKGROUND_COLOR)
-        self.paddle1.render(canvas)
-        self.paddle2.render(canvas)
+
+        # render the paddles
+        for paddle in self.paddles:
+            paddle.render(canvas=canvas)
 
 
 class Mainmenu(Menu):

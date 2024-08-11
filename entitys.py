@@ -5,7 +5,7 @@ import settings
 
 class Paddle:
     """ move with keys, collide with walls and powerups """
-    def __init__(self, game, player) -> None:
+    def __init__(self, game, pos: pygame.Vector2, keybinds) -> None:
         super().__init__()
 
         self.speed = settings.PADDLE_SPEED
@@ -20,17 +20,8 @@ class Paddle:
             angle=90,
         )
 
-        self.player=player
-        if self.player == 1:
-            self.pos: pygame.Vector2 = pygame.Vector2(
-                x=settings.WIDTH / 10,
-                y=settings.HEIGHT - (settings.HEIGHT / 2)
-                )  # center the paddle on x and 10% of height on y
-        elif self.player == 2:
-            self.pos: pygame.Vector2 = pygame.Vector2(
-                x=settings.WIDTH - settings.WIDTH / 10,
-                y=settings.HEIGHT - (settings.HEIGHT / 2)
-                )  # center the paddle on x and 10% of height on y
+        self.pos = pos
+        self.keybinds = keybinds
 
         self.rect: pygame.Rect = self.image.get_rect()
         self.rect.centerx = int(self.pos.x)
@@ -39,15 +30,15 @@ class Paddle:
     def update(self, keys: set[str]) -> None:
         """ change the direction, move and collide """
         # update direction with arrows
-        if 'RIGHT' in keys:
+        if self.keybinds.RIGHT in keys:
             self.direction.x = 1
-        elif 'LEFT' in keys:
+        elif self.keybinds.LEFT in keys:
             self.direction.x = -1
         else:
             self.direction.x = 0
-        if 'UP' in keys:
+        if self.keybinds.UP in keys:
             self.direction.y = -1
-        elif 'DOWN' in keys:
+        elif self.keybinds.DOWN in keys:
             self.direction.y = 1
         else:
             self.direction.y = 0

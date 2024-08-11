@@ -63,12 +63,12 @@ class Menu(State):
         def update(self, new_text: str) -> None:
             """ recreate an image from text and font """
             self.image: pygame.Surface = self.font.render(new_text, False, settings.FONT_COLOR)
-            self.Frect: pygame.Frect = self.image.get_frect()
-            self.Frect.center = self.pos
+            self.frect: pygame.FRect = self.image.get_frect()
+            self.frect.center = self.pos
 
         def render(self, canvas: pygame.Surface) -> None:
             """ bruh it's just a blit """
-            canvas.blit(self.image, self.Frect)
+            canvas.blit(self.image, self.frect)
 
     class Button:
         """ button to pass to the menu.
@@ -87,7 +87,7 @@ class Menu(State):
             self.selected = selected
 
             self.image: pygame.Surface = self.font.render(self.text, False, color=(0, 0, 0))
-            self.Frect: pygame.Frect = self.image.get_frect()
+            self.frect: pygame.FRect = self.image.get_frect()
 
         def update(self) -> None:
             """ add ">button<" arround the button if selected """
@@ -96,9 +96,9 @@ class Menu(State):
             else:
                 self.image = self.font.render(self.text, False, color=(0, 0, 0))
 
-            self.Frect = self.image.get_frect()
+            self.frect = self.image.get_frect()
 
-        def render(self, canvas: pygame.Surface, dest: tuple[int, int]) -> None:
+        def render(self, canvas: pygame.Surface, dest: tuple[float, float]) -> None:
             """ i hate you pylint """
             canvas.blit(self.image, dest=dest)
 
@@ -170,10 +170,10 @@ class Menu(State):
         # blit the buttons
         for i, button in enumerate(self.buttons):
             # center this shit was a pain in the ass
-            x = settings.WIDTH // 2 - button.Frect.width // 2
+            x = settings.WIDTH // 2 - button.FRect.width // 2
             y = (
-                    (settings.HEIGHT // 2 - (button.Frect.height // 2) * ((3 * i) + 1)) +
-                    (len(self.buttons) // 2) * button.Frect.height
+                    (settings.HEIGHT // 2 - (button.FRect.height // 2) * ((3 * i) + 1)) +
+                    (len(self.buttons) // 2) * button.FRect.height
             )
             button.render(canvas, (x, y))
 
@@ -203,17 +203,15 @@ class Gameplay(State):
         # create objects
         self.paddles: list[Paddle] = []
         self.paddles.append(Paddle(
-            self.game,
-            pos=pygame.Vector2(settings.WIDTH / 10, settings.HEIGHT / 2),
+            pos=(settings.WIDTH / 10, settings.HEIGHT / 2),
             keybinds=settings.P1Keys,
         ))
         self.paddles.append(Paddle(
-            self.game,
-            pos=pygame.Vector2(settings.WIDTH * 0.9, settings.HEIGHT / 2),
+            pos=(settings.WIDTH * 0.9, settings.HEIGHT / 2),
             keybinds=settings.P2Keys,
         ))
 
-        self.ball = Ball(pos=pygame.Vector2(settings.WIDTH/2, settings.HEIGHT/2))
+        self.ball = Ball(pos=(settings.WIDTH/2, settings.HEIGHT/2))
 
     def update(self, keys: set[str]) -> None:
         """ update the balls, powerups and paddle """

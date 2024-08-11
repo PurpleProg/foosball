@@ -30,12 +30,6 @@ class Paddle:
     def update(self, keys: set[str]) -> None:
         """ change the direction, move and collide """
         # update direction with arrows
-        '''if self.keybinds.RIGHT in keys:
-            self.direction.x = 1
-        elif self.keybinds.LEFT in keys:
-            self.direction.x = -1
-        else:
-            self.direction.x = 0'''
         if self.keybinds.UP in keys:
             self.direction.y = -1
         elif self.keybinds.DOWN in keys:
@@ -57,10 +51,8 @@ class Paddle:
         if self.FRect.bottom > settings.HEIGHT:
             self.FRect.bottom = settings.HEIGHT
             #keys.remove('DOWN')
-            self.FRect.y = self.FRect.centery
         elif self.FRect.top < 0:
             self.FRect.top = 0
-            self.FRect.y = self.FRect.centery
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """
@@ -162,6 +154,8 @@ class Ball:
                 bounce_angle_in_radian = math.radians(bounce_angle)
 
                 self.direction.y = math.sin(bounce_angle_in_radian)
+                # clamp left or right direction depending on the paddle position
+                # if the paddle is on the right the ball bounce to the left
                 if self.FRect.x > settings.WIDTH/2:
                     self.direction.x = -math.cos(bounce_angle_in_radian)
                 else:

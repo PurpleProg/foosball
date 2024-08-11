@@ -122,6 +122,7 @@ class Ball:
         if self.direction.magnitude() > 1:
             self.direction.normalize_ip()
 
+
     def collide_with_walls(self) -> None:
         """ bounce on walls and ceiling """
         # left
@@ -174,7 +175,13 @@ class Ball:
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """
-        canvas.blit(self.image, self.frect)
+
+        # rotate the image
+        angle_radian = math.atan2(self.direction.x, self.direction.y)
+        rotated_image = pygame.transform.rotate(self.image, math.degrees(angle_radian))
+
+        canvas.blit(rotated_image, self.frect)
+
         if settings.SHOW_HITBOX:
             pygame.draw.rect(
                 surface=canvas,
@@ -182,7 +189,6 @@ class Ball:
                 rect=self.frect,
                 width=1
             )
-
         if settings.SHOW_DIRECTIONS:
             pygame.draw.line(
                 surface=canvas,
@@ -194,6 +200,5 @@ class Ball:
                 ),
                 width=2,
             )
-
         if settings.DEBUG_POS:
             print(f'ball position : {self.frect.x}, {self.frect.y}')

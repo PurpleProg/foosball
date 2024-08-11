@@ -190,7 +190,8 @@ class Gameplay(State):
         super().__init__(game)
 
         # reset score
-        settings.score = 0
+        settings.score['RIGHT'] = 0
+        settings.score['LEFT'] = 0
 
         # add itself to the stack
         self.enter_state()
@@ -319,11 +320,6 @@ class Gameover(Menu):
         # append itself to the stack
         self.enter_state()
 
-        # save score
-        if settings.score > settings.highscore['manu']:
-            settings.highscore['manu'] = settings.score
-            utils.write_encode_string(file_name='highscore', data=settings.highscore)
-
         # create buttons
         self.buttons.append(Menu.Button(
             text='menu',
@@ -347,12 +343,12 @@ class Gameover(Menu):
             pos=(settings.WIDTH // 2, settings.HEIGHT // 10)
         ))  # GAME OVER
         self.labels.append(Menu.Label(
-            text=f'score : {int(settings.score)}',
+            text=f'score : {settings.score['RIGHT']}-{settings.score['LEFT']}',
             font=self.bold_font,
             pos=(settings.WIDTH // 2, (settings.HEIGHT // 16) * 11)
         ))  # score : 99
         self.labels.append(Menu.Label(
-            text=f"highscore : {int(settings.highscore['manu'])}",
+            text=f"highscore : {settings.highscore['RIGHT']}-{settings.highscore['LEFT']}",
             font=self.bold_font,
             pos=(settings.WIDTH // 2, (settings.HEIGHT // 16) * 13)
         ))  # highscore : 9999
@@ -382,11 +378,6 @@ class Win(Menu):
         # append itself to the stack
         self.enter_state()
 
-        # save score
-        if settings.score > settings.highscore['manu']:
-            settings.highscore['manu'] = settings.score
-            utils.write_encode_string(file_name='highscore', data=settings.highscore)
-
         # create buttons
         self.buttons.append(Menu.Button(
             text='menu',
@@ -411,12 +402,12 @@ class Win(Menu):
                 pos=(settings.WIDTH // 2, settings.HEIGHT // 10),
             ),  # YOU WON
             Menu.Label(
-                text=f'score : {int(settings.score)}',
+                text=f'score : {settings.score['LEFT']}-{settings.score['RIGHT']}',
                 font=self.bold_font,
                 pos=(settings.WIDTH // 2, (settings.HEIGHT // 16) * 11),
             ),  # score : 090
             Menu.Label(
-                text=f"highscore : {int(settings.highscore['manu'])}",
+                text=f"highscore : {settings.score['LEFT']}-{settings.score['RIGHT']}",
                 font=self.bold_font,
                 pos=(settings.WIDTH // 2, (settings.HEIGHT // 16) * 13),
             ),  # highscore
@@ -468,7 +459,7 @@ class Pause(Menu):
             pos=(settings.WIDTH // 2, settings.HEIGHT // 10)
         ))  # settings
         self.labels.append(Menu.Label(
-            text=f'score : {int(settings.score)}',
+            text=f'score : {settings.score['LEFT']}-{settings.score['RIGHT']}',
             font=self.bold_font,
             pos=(settings.WIDTH // 2, int(settings.HEIGHT * 0.8))
         ))  # score : 999
@@ -548,8 +539,9 @@ class Settings(Menu):
         """ force save score to highscore file.
         this is a debug feature.
         """
-        utils.save(score=settings.score)
-        utils.load_highscore()
+        raise NotImplementedError('not yet...')
+        # utils.save(score=settings.score)
+        # utils.load_highscore()
 
 
 class Difficulties(Menu):

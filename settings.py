@@ -5,9 +5,9 @@ Color = NewType('Color', str)
 
 
 # global score
-score: float = 0.0
+score: dict[str, int] = {'RIGHT': 0, 'LEFT': 0,}
 # should be overwritten during game init
-highscore: dict[str, float] = {'manu': 0.0}
+highscore: dict[str, int] = {'RIGHT': 0, 'LEFT': 0,}
 
 
 # debugs
@@ -33,6 +33,11 @@ HEIGHT_BACKUP = HEIGHT
 COUNTDOWN = 1  # number of second before the gameplay start
 
 APPROX_CORNER_COLLISION = 10
+
+
+# GOAL
+GOAL_TOP = HEIGHT * 0.1
+GOAL_BOTTOM = HEIGHT * 0.9
 
 
 # keys

@@ -124,22 +124,33 @@ class Ball:
 
     def collide_with_walls(self) -> None:
         """ bounce on walls and ceiling """
-        if self.frect.left < 0 or self.frect.right > settings.WIDTH :
-            self.direction.x *= -1
-            # prevent the ball from going out of bounce
-            if self.frect.right > settings.WIDTH:
-                self.frect.right = settings.WIDTH
-                self.direction.x = -1
-            elif self.frect.left < 0:
+        # left
+        if self.frect.left < 0:
+            if (self.frect.top < settings.GOAL_TOP or self.frect.bottom > settings.GOAL_BOTTOM):
                 self.frect.left = 0
                 self.direction.x = 1
+            else:
+                settings.score['RIGHT'] += 1
+                self.frect.center = settings.WIDTH/2, settings.HEIGHT/2
+                self.direction.y = 0
+                self.direction.x = -1
+        # right
+        if self.frect.right > settings.WIDTH:
+            if (self.frect.top < settings.GOAL_TOP or self.frect.bottom > settings.GOAL_BOTTOM):
+                self.frect.right = settings.WIDTH
+                self.direction.x = -1
+            else:
+                self.frect.center = settings.WIDTH/2, settings.HEIGHT/2
+                settings.score['LEFT'] += 1
+                self.direction.y = 0
+                self.direction.x = 1
+
         # ceiling
         if self.frect.top < 0:
             self.frect.top = 0
             self.direction.y = 1
-        # bounce on the bottom too IF cheats are enable in settings
-        # gameover is detected on gameplay.update
-        if self.frect.bottom > settings.HEIGHT and settings.INVISIBILITY:
+        # floor
+        if self.frect.bottom > settings.HEIGHT:
             self.direction.y = -1
             self.frect.bottom = settings.HEIGHT
 

@@ -30,14 +30,15 @@ def load_highscore() -> None:
         settings.highscore = read_b64_json_file(file_name='highscore')
     except FileNotFoundError:
         # if the file is not found, create it with hiscore 0
-        settings.highscore = {'manu': 0, }
+        settings.highscore = {'RIGHT': 0, 'LEFT': 0}
         write_encode_string(file_name='highscore', data=settings.highscore)
 
 
-def save(score: float) -> None:
+def save(score_left: int, score_right: int) -> None:
     """ save the highscore to file """
     score_data = {
-        'manu': int(score)
+        'RIGHT': score_right,
+        'LEFT': score_left,
     }
     score_json: str = json.dumps(score_data)
     encoded_json: str = base64.b64encode(score_json.encode()).decode()

@@ -63,12 +63,12 @@ class Menu(State):
         def update(self, new_text: str) -> None:
             """ recreate an image from text and font """
             self.image: pygame.Surface = self.font.render(new_text, False, settings.FONT_COLOR)
-            self.rect: pygame.Rect = self.image.get_rect()
-            self.rect.center = self.pos
+            self.Frect: pygame.Frect = self.image.get_frect()
+            self.Frect.center = self.pos
 
         def render(self, canvas: pygame.Surface) -> None:
             """ bruh it's just a blit """
-            canvas.blit(self.image, self.rect)
+            canvas.blit(self.image, self.Frect)
 
     class Button:
         """ button to pass to the menu.
@@ -87,7 +87,7 @@ class Menu(State):
             self.selected = selected
 
             self.image: pygame.Surface = self.font.render(self.text, False, color=(0, 0, 0))
-            self.rect: pygame.Rect = self.image.get_rect()
+            self.Frect: pygame.Frect = self.image.get_frect()
 
         def update(self) -> None:
             """ add ">button<" arround the button if selected """
@@ -96,7 +96,7 @@ class Menu(State):
             else:
                 self.image = self.font.render(self.text, False, color=(0, 0, 0))
 
-            self.rect = self.image.get_rect()
+            self.Frect = self.image.get_frect()
 
         def render(self, canvas: pygame.Surface, dest: tuple[int, int]) -> None:
             """ i hate you pylint """
@@ -170,10 +170,10 @@ class Menu(State):
         # blit the buttons
         for i, button in enumerate(self.buttons):
             # center this shit was a pain in the ass
-            x = settings.WIDTH // 2 - button.rect.width // 2
+            x = settings.WIDTH // 2 - button.Frect.width // 2
             y = (
-                    (settings.HEIGHT // 2 - (button.rect.height // 2) * ((3 * i) + 1)) +
-                    (len(self.buttons) // 2) * button.rect.height
+                    (settings.HEIGHT // 2 - (button.Frect.height // 2) * ((3 * i) + 1)) +
+                    (len(self.buttons) // 2) * button.Frect.height
             )
             button.render(canvas, (x, y))
 

@@ -11,7 +11,7 @@ class Paddle:
         super().__init__()
 
         self.speed = settings.PADDLE_SPEED
-        self.direction = pygame.Vector2(0, 0)
+        self.diFrection = pygame.Vector2(0, 0)
 
         self.image: pygame.Surface = pygame.image.load(
             file='assets/Paddles/Style B/Paddle_B_Purple_128x28.png'
@@ -25,66 +25,66 @@ class Paddle:
         self.pos = pos
         self.keybinds = keybinds
 
-        self.rect: pygame.Rect = self.image.get_rect()
-        self.rect.centerx = int(self.pos.x)
-        self.rect.centery = int(self.pos.y)
+        self.Frect: pygame.FRect = self.image.get_frect()
+        self.Frect.centerx = int(self.pos.x)
+        self.Frect.centery = int(self.pos.y)
 
     def update(self, keys: set[str]) -> None:
-        """ change the direction, move and collide """
-        # update direction with arrows
-        if self.keybinds.RIGHT in keys:
-            self.direction.x = 1
+        """ change the diFrection, move and collide """
+        # update diFrection with arrows
+        '''if self.keybinds.RIGHT in keys:
+            self.diFrection.x = 1
         elif self.keybinds.LEFT in keys:
-            self.direction.x = -1
+            self.diFrection.x = -1
         else:
-            self.direction.x = 0
+            self.diFrection.x = 0'''
         if self.keybinds.UP in keys:
-            self.direction.y = -1
+            self.diFrection.y = -1
         elif self.keybinds.DOWN in keys:
-            self.direction.y = 1
+            self.diFrection.y = 1
         else:
-            self.direction.y = 0
+            self.diFrection.y = 0
 
         # move the paddle
-        self.pos.x += self.speed * self.direction.x
-        self.pos.y += self.speed * self.direction.y
+        self.pos.x += self.speed * self.diFrection.x
+        self.pos.y += self.speed * self.diFrection.y
 
-        # update rect
-        self.rect.centerx = int(self.pos.x)
-        self.rect.centery = int(self.pos.y)
+        # update Frect
+        self.Frect.centerx = int(self.pos.x)
+        self.Frect.centery = int(self.pos.y)
 
         # collide powerups
         # for powerup in powerups:
-        #    if self.rect.colliderect(powerup.rect):
+        #    if self.Frect.collideFrect(powerup.Frect):
         #       powerup.activate()
 
         # prevent paddle from going out of bounds
         # collide with walls
         # x-axis
-        if self.rect.right > settings.WIDTH:
-            self.rect.right = settings.WIDTH
+        '''if self.Frect.right > settings.WIDTH:
+            self.Frect.right = settings.WIDTH
             keys.remove('RIGHT')
-            self.pos.x = self.rect.centerx
-        elif self.rect.left < 0:
-            self.rect.left = 0
-            self.pos.x = self.rect.centerx
+            self.pos.x = self.Frect.centerx
+        elif self.Frect.left < 0:
+            self.Frect.left = 0
+            self.pos.x = self.Frect.centerx'''
         # y-axis
-        # if self.rect.bottom > settings.HEIGHT:
-            # self.rect.bottom = settings.HEIGHT
-            # keys.remove('DOWN')
-            # self.pos.y = self.rect.centery
-        # elif self.rect.top < 0:
-            # self.rect.top = 0
-            # self.pos.y = self.rect.centery
+        if self.Frect.bottom > settings.HEIGHT:
+            self.Frect.bottom = settings.HEIGHT
+            #keys.remove('DOWN')
+            self.pos.y = self.Frect.centery
+        elif self.Frect.top < 0:
+            self.Frect.top = 0
+            self.pos.y = self.Frect.centery
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """
-        canvas.blit(self.image, self.rect)
+        canvas.blit(self.image, self.Frect)
         if settings.SHOW_HITBOX:
             pygame.draw.rect(
                 surface=canvas,
                 color=settings.HITBOX_COLOR,
-                rect=self.rect,
+                rect=self.Frect,
                 width=1
             )
 
@@ -95,10 +95,10 @@ class Paddle:
             pygame.draw.line(
                 surface=canvas,
                 color=settings.DIRECTION_COLOR,
-                start_pos=self.rect.center,
+                start_pos=self.Frect.center,
                 end_pos=(
-                    self.rect.centerx + self.direction.x * self.speed * 20,
-                    self.rect.centery + self.direction.y * self.speed * 20
+                    self.Frect.centerx + self.diFrection.x * self.speed * 20,
+                    self.Frect.centery + self.diFrection.y * self.speed * 20
                 ),
                 width=2,
             )
@@ -110,7 +110,7 @@ class Ball:
         super().__init__()
 
         self.speed: int = settings.BALL_SPEED
-        self.direction: pygame.Vector2 = pygame.Vector2(
+        self.diFrection: pygame.Vector2 = pygame.Vector2(
             x=random.uniform(-1, 1),
             y=0)
 
@@ -119,11 +119,11 @@ class Ball:
         ).convert()
         self.image.set_colorkey('#ff00ff')
 
-        self.rect: pygame.Rect = self.image.get_rect()
+        self.Frect: pygame.FRect = self.image.get_frect()
         self.pos = pos
 
-        self.rect.centerx = int(self.pos.x)
-        self.rect.centery = int(self.pos.y)
+        self.Frect.centerx = int(self.pos.x)
+        self.Frect.centery = int(self.pos.y)
 
     def update(
         self,
@@ -131,11 +131,11 @@ class Ball:
     ) -> None:
         """change the position of the ball"""
 
-        self.pos.x += self.speed * self.direction.x
-        self.pos.y += self.speed * self.direction.y
+        self.pos.x += self.speed * self.diFrection.x
+        self.pos.y += self.speed * self.diFrection.y
 
-        self.rect.x = int(self.pos.x)
-        self.rect.y = int(self.pos.y)
+        self.Frect.x = int(self.pos.x)
+        self.Frect.y = int(self.pos.y)
 
         self.collide(paddles)
 
@@ -148,54 +148,54 @@ class Ball:
         self.collide_with_paddle(paddles=paddles)
         self.collide_with_walls()
 
-        if self.direction.magnitude() > 1:
-            self.direction.normalize_ip()
+        if self.diFrection.magnitude() > 1:
+            self.diFrection.normalize_ip()
 
     def collide_with_walls(self) -> None:
         """ bounce on walls and ceiling """
-        if self.rect.left < 0 or self.rect.right > settings.WIDTH :
-            self.direction.x *= -1
+        if self.Frect.left < 0 or self.Frect.right > settings.WIDTH :
+            self.diFrection.x *= -1
             # prevent the ball from going out of bounce
-            if self.rect.right > settings.WIDTH:
-                self.rect.right = settings.WIDTH
-                self.direction.x = -1
-            elif self.rect.left < 0:
-                self.rect.left = 0
-                self.direction.x = 1
+            if self.Frect.right > settings.WIDTH:
+                self.Frect.right = settings.WIDTH
+                self.diFrection.x = -1
+            elif self.Frect.left < 0:
+                self.Frect.left = 0
+                self.diFrection.x = 1
         # ceiling
-        if self.rect.top < 0:
-            self.rect.top = 0
-            self.direction.y = 1
+        if self.Frect.top < 0:
+            self.Frect.top = 0
+            self.diFrection.y = 1
         # bounce on the bottom too IF cheats are enable in settings
         # gameover is detected on gameplay.update
-        if self.rect.bottom > settings.HEIGHT and settings.INVISIBILITY:
-            self.direction.y = -1
-            self.rect.bottom = settings.HEIGHT
+        if self.Frect.bottom > settings.HEIGHT and settings.INVISIBILITY:
+            self.diFrection.y = -1
+            self.Frect.bottom = settings.HEIGHT
 
     def collide_with_paddle(self, paddles: list[Paddle]) -> None:
         """ bounce on paddle, calculate bounce angle """
         for paddle in paddles:
-            if self.rect.colliderect(paddle.rect):
+            if self.Frect.colliderect(paddle.Frect):
                 # calculate angle
-                distance = self.rect.centery - paddle.rect.centery
-                normalized_distance = distance/(paddle.rect.height/2)
+                distance = self.Frect.centery - paddle.Frect.centery
+                normalized_distance = distance/(paddle.Frect.height/2)
                 bounce_angle = settings.MAX_BOUNCE_ANGLE * normalized_distance
                 bounce_angle_in_radian = math.radians(bounce_angle)
 
-                self.direction.y = math.sin(bounce_angle_in_radian)
+                self.diFrection.y = math.sin(bounce_angle_in_radian)
                 if self.pos.x > settings.WIDTH/2:
-                    self.direction.x = -math.cos(bounce_angle_in_radian)
+                    self.diFrection.x = -math.cos(bounce_angle_in_radian)
                 else:
-                    self.direction.x = math.cos(bounce_angle_in_radian)
+                    self.diFrection.x = math.cos(bounce_angle_in_radian)
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """
-        canvas.blit(self.image, self.rect)
+        canvas.blit(self.image, self.Frect)
         if settings.SHOW_HITBOX:
             pygame.draw.rect(
                 surface=canvas,
                 color=settings.HITBOX_COLOR,
-                rect=self.rect,
+                rect=self.Frect,
                 width=1
             )
 
@@ -203,10 +203,10 @@ class Ball:
             pygame.draw.line(
                 surface=canvas,
                 color=settings.DIRECTION_COLOR,
-                start_pos=self.rect.center,
+                start_pos=self.Frect.center,
                 end_pos=(
-                    self.rect.centerx + self.direction.x * self.speed * 10,
-                    self.rect.centery + self.direction.y * self.speed * 10
+                    self.Frect.centerx + self.diFrection.x * self.speed * 10,
+                    self.Frect.centery + self.diFrection.y * self.speed * 10
                 ),
                 width=2,
             )

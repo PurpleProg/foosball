@@ -179,10 +179,18 @@ class Ball:
         # rotate the image
         angle_radian = math.atan2(self.direction.x, self.direction.y)
         rotated_image = pygame.transform.rotate(self.image, math.degrees(angle_radian))
+        rotated_image_frect = rotated_image.get_frect()
+        rotated_image_frect.center = self.frect.center
 
-        canvas.blit(rotated_image, self.frect)
+        canvas.blit(rotated_image, rotated_image_frect)
 
         if settings.SHOW_HITBOX:
+            pygame.draw.rect(
+                surface=canvas,
+                color='#ffff00',
+                rect=rotated_image_frect,
+                width=1,
+            )
             pygame.draw.rect(
                 surface=canvas,
                 color=settings.HITBOX_COLOR,

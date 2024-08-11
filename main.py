@@ -28,7 +28,6 @@ class Game:
         states.Mainmenu(self)
 
         # init global game var
-        # self.score: float = 0.0
         self.running: bool = True
         self.clock = pygame.time.Clock()
         self.keys: set[str] = set()

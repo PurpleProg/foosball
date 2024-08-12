@@ -41,6 +41,7 @@ GOAL_BOTTOM = HEIGHT * 0.9
 
 
 # keys
+# pylint: disable=too-few-public-methods
 class P1Keys:
     """ hold the keybinds of the player 1 """
     RIGHT = 'd'
@@ -54,6 +55,7 @@ class P2Keys:
     LEFT = 'LEFT'
     UP = 'UP'
     DOWN = 'DOWN'
+# pylint: enable=too-few-public-methods
 
 
 # BACKGROUND COLORS

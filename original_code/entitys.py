@@ -1,4 +1,5 @@
 """ Define elements of the game, like a ball """
+# pylint: skip-file
 import math  # for bounce angle calc
 import random
 from abc import abstractmethod, ABC

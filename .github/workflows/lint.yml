@@ -5,8 +5,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -19,7 +17,9 @@ jobs:
         pip install pylint
         pip install mypy
         pip install pygame-ce
-    - name: Analysing the code with pylint and mypy
+    - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py')
+    - name: Analysing the code with mypy
+      run: |
         mypy main.py

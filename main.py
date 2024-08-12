@@ -1,5 +1,5 @@
-""" main file of a breakout game
-Copyright me
+""" main file of the foosball game
+Copyright us
 Licence GPL-3+
 """
 import pygame

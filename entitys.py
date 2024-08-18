@@ -3,7 +3,7 @@ import random
 import math
 import pygame
 import settings
-
+import sound
 
 class Paddle:
     """ move with keys, collide with walls and powerups """
@@ -99,6 +99,10 @@ class Ball:
         self.frect: pygame.FRect = self.image.get_frect()
         self.frect.center = pos
 
+        """Sounds"""
+
+        self.ball_hit = sound.ball_hit
+
     def update(
         self,
         paddles: list[Paddle],
@@ -130,30 +134,37 @@ class Ball:
             if (self.frect.top < settings.GOAL_TOP or self.frect.bottom > settings.GOAL_BOTTOM):
                 self.frect.left = 0
                 self.direction.x = 1
+                pygame.mixer.Sound.play(self.ball_hit)
             else:
                 settings.score['RIGHT'] += 1
                 self.frect.center = settings.WIDTH/2, settings.HEIGHT/2
                 self.direction.y = 0
                 self.direction.x = -1
+                pygame.mixer.Sound.play(self.ball_hit)
         # right
         if self.frect.right > settings.WIDTH:
             if (self.frect.top < settings.GOAL_TOP or self.frect.bottom > settings.GOAL_BOTTOM):
                 self.frect.right = settings.WIDTH
                 self.direction.x = -1
+                pygame.mixer.Sound.play(self.ball_hit)
             else:
                 self.frect.center = settings.WIDTH/2, settings.HEIGHT/2
                 settings.score['LEFT'] += 1
                 self.direction.y = 0
                 self.direction.x = 1
+                pygame.mixer.Sound.play(self.ball_hit)
 
         # ceiling
         if self.frect.top < 0:
             self.frect.top = 0
             self.direction.y = 1
+            pygame.mixer.Sound.play(self.ball_hit)
         # floor
         if self.frect.bottom > settings.HEIGHT:
             self.direction.y = -1
             self.frect.bottom = settings.HEIGHT
+            pygame.mixer.Sound.play(self.ball_hit)
+        
 
     def collide_with_paddle(self, paddles: list[Paddle]) -> None:
         """ bounce on paddle, calculate bounce angle """
@@ -172,6 +183,7 @@ class Ball:
                     self.direction.x = -math.cos(bounce_angle_in_radian)
                 else:
                     self.direction.x = math.cos(bounce_angle_in_radian)
+                pygame.mixer.Sound.play(self.ball_hit)
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit it's image to a surface """

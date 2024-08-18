@@ -192,7 +192,7 @@ class Gameplay(State):
         # reset score
         settings.score['RIGHT'] = 0
         settings.score['LEFT'] = 0
-        self.last_score = settings.score
+        self.last_score = settings.score.copy()
 
         self.score_font = pygame.font.Font('font/PixeloidSansBold.ttf', 50)
         self.score_image = self.score_font.render('score', False, '#FFFFFF')
@@ -231,10 +231,11 @@ class Gameplay(State):
         self.ball.update(self.paddles)
 
         if self.last_score != settings.score:
+            print('wo')
             self.score_image = self.score_font.render(
                 f'{settings.score['LEFT']}-{settings.score['RIGHT']}', False, settings.SCORE_COLOR
             )
-            self.last_score = settings.score
+            self.last_score = settings.score.copy()
 
         # process keys press
         if 'ESCAPE' in keys:

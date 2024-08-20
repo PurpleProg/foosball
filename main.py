@@ -20,7 +20,7 @@ class Game:
 
         # init the display
         self.display: pygame.Surface = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT))
-        pygame.display.set_caption("Pong Game")
+        pygame.display.set_caption("Foosball")
         self.fullscreen = False
 
         # init the stack

@@ -247,7 +247,12 @@ class Gameplay(State):
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit paddles to the given surface """
+        field: pygame.Surface = pygame.image.load(
+            file='assets/Field/field2.png').convert()
+        
         canvas.fill(color=settings.BACKGROUND_COLOR)
+        
+        canvas.blit(field,(0,0))
 
         if settings.SHOW_HITBOX:
             pygame.draw.line(

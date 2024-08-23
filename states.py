@@ -189,24 +189,29 @@ class Gameplay(State):
     def __init__(self, game) -> None:
         super().__init__(game)
 
+        self.field: pygame.Surface = pygame.image.load(
+            file='assets/Field/field2.png'
+        ).convert()
+
         # reset score
         settings.score['RIGHT'] = 0
         settings.score['LEFT'] = 0
         self.last_score = settings.score.copy()
 
         self.score_font = pygame.font.Font('font/PixeloidSansBold.ttf', 50)
-        self.score_image = self.score_font.render('score', False, '#FFFFFF')
-        self.score_image = self.score_font.render(
-            f'{settings.score['LEFT']}-{settings.score['RIGHT']}', False, settings.SCORE_COLOR
-            )
+        self.score_left_image: pygame.Surface = self.score_font.render(
+            text=str(settings.score['LEFT']),
+            antialias=False,
+            color=settings.SCORE_COLOR
+        )
+        self.score_right_image: pygame.Surface = self.score_font.render(
+            text=str(settings.score['RIGHT']),
+            antialias=False,
+            color=settings.SCORE_COLOR
+        )
 
         # add itself to the stack
         self.enter_state()
-
-        self.playtime_in_frames = 0
-
-        # timer
-        self.countdown_in_frames = settings.COUNTDOWN*settings.FPS
 
         # create objects
         self.paddles: list[Paddle] = []
@@ -230,10 +235,17 @@ class Gameplay(State):
 
         self.ball.update(self.paddles)
 
+        # only update score images if the score change
         if self.last_score != settings.score:
-            print('wo')
-            self.score_image = self.score_font.render(
-                f'{settings.score['LEFT']}-{settings.score['RIGHT']}', False, settings.SCORE_COLOR
+            self.score_left_image: pygame.Surface = self.score_font.render(
+                text=str(settings.score['LEFT']),
+                antialias=False,
+                color=settings.SCORE_COLOR
+            )
+            self.score_right_image: pygame.Surface = self.score_font.render(
+                text=str(settings.score['RIGHT']),
+                antialias=False,
+                color=settings.SCORE_COLOR
             )
             self.last_score = settings.score.copy()
 
@@ -247,12 +259,8 @@ class Gameplay(State):
 
     def render(self, canvas: pygame.Surface) -> None:
         """ blit paddles to the given surface """
-        field: pygame.Surface = pygame.image.load(
-            file='assets/Field/field2.png').convert()
-        
-        canvas.fill(color=settings.BACKGROUND_COLOR)
-        
-        canvas.blit(field,(0,0))
+
+        canvas.blit(source=self.field, dest=(0,0))
 
         if settings.SHOW_HITBOX:
             pygame.draw.line(
@@ -269,12 +277,18 @@ class Gameplay(State):
             paddle.render(canvas=canvas)
 
         # blit score label
-
         canvas.blit(
-            source=self.score_image,
+            source=self.score_left_image,
             dest=(
-                (settings.WIDTH/2) - (self.score_image.width/2),
-                self.score_image.height + 20
+                (settings.WIDTH / 4) - (self.score_left_image.width/2),
+                self.score_left_image.height
+            )
+        )
+        canvas.blit(
+            source=self.score_right_image,
+            dest=(
+                (settings.WIDTH / 4) * 3 - (self.score_right_image.width/2),
+                self.score_right_image.height
             )
         )
 

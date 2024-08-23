@@ -39,7 +39,7 @@ class State(ABC):
             pass
 
 
-class Menu(State):
+class Menu(State, ABC):
     """ Parent class of all menus, handel buttons and labels rendering.
     The first button declared is the bottom one.
     Exactly one button shall be set selected.
@@ -55,15 +55,18 @@ class Menu(State):
                 pos: tuple[int, int],
         ) -> None:
             self.font = font
+            self.text = text
             self.pos = pos
 
-            self.update(new_text=text)
+            self.update(new_text=self.text, pos=pos)
 
-        def update(self, new_text: str) -> None:
-            """ recreate an image from text and font """
+        def update(self, new_text: str, pos: tuple[int, int]) -> None:
+            """ recreate an image and a frect
+            arg new_text is a string, will be rendered using self.font
+            """
             self.image: pygame.Surface = self.font.render(new_text, False, settings.FONT_COLOR)
             self.frect: pygame.FRect = self.image.get_frect()
-            self.frect.center = self.pos
+            self.frect.center = pos
 
         def render(self, canvas: pygame.Surface) -> None:
             """ bruh it's just a blit """
@@ -108,6 +111,9 @@ class Menu(State):
             is_transparent: bool = False
     ) -> None:
         super().__init__(game)
+
+        self.__name__: str = 'Menu'
+
         # background
         self.background_color = background_color
         self.is_transparent = is_transparent
@@ -187,6 +193,8 @@ class Gameplay(State):
     """
     def __init__(self, game) -> None:
         super().__init__(game)
+
+        self.__name__: str = 'Gameplay'
 
         self.field: pygame.Surface = pygame.image.load(
             file='assets/Field/field2.png'
@@ -296,6 +304,10 @@ class Gameplay(State):
                 self.score_right_image.height
             )
         )
+
+    def __repr__(self) -> str:
+        """ return the type of the state """
+        return 'Gameplay'
 
 
 class Mainmenu(Menu):
@@ -672,8 +684,10 @@ class Resolution(Menu):
 
     def toggle_fullscreen(self) -> None:
         """ re-set the pygame display,
-        update settings screen size
+        change settings screen size (wich whould be a constant hum...)
+        update the labels of each state in the stack
         """
+        # recreate the display
         if self.game.fullscreen:
             self.game.display = pygame.display.set_mode(
                 size=(settings.WIDTH_BACKUP, settings.HEIGHT_BACKUP)
@@ -685,6 +699,17 @@ class Resolution(Menu):
             settings.WIDTH, settings.HEIGHT = self.game.display.get_size()
             self.game.fullscreen = True
 
+        # update labels for every Menu state in the stack
+        self.update_labels()
+
+    def update_labels(self):
+        """ update the labels positions for every Menu state in the stack """
+        for state in self.game.stack:
+            if state.__name__ != 'Menu':
+                continue
+            for label in state.labels:
+                label.update(new_text=label.text, pos=(settings.WIDTH/2, settings.HEIGHT*0.1))
+
     def res_512x256(self) -> None:
         """ recreate the pygame display at a given size
         and update settings.WIDTH and settings.HEIGHT
@@ -692,9 +717,13 @@ class Resolution(Menu):
         self.game.display = pygame.display.set_mode(size=(512, 256))
         settings.WIDTH, settings.HEIGHT = 512, 256
 
+        self.update_labels()
+
     def res_1024x512(self) -> None:
         """ recreate the pygame display at a given size
         and update settings.WIDTH and settings.HEIGHT
         """
         self.game.display = pygame.display.set_mode(size=(1024, 512))
         settings.WIDTH, settings.HEIGHT = 1024, 512
+
+        self.update_labels()

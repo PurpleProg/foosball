@@ -196,9 +196,13 @@ class Gameplay(State):
 
         self.__name__: str = 'Gameplay'
 
-        self.field: pygame.Surface = pygame.image.load(
-            file='assets/Field/field2.png'
-        ).convert()
+        self.field: pygame.Surface = pygame.transform.scale(
+            surface=pygame.image.load(
+                file='assets/Field/field2.png'
+            ).convert(),
+            size=(settings.WIDTH, settings.HEIGHT)
+        )
+
 
         # reset score
         settings.score['RIGHT'] = 0

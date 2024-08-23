@@ -12,25 +12,23 @@ highscore: dict[str, int] = {'RIGHT': 0, 'LEFT': 0,}
 
 # debugs
 CHEATS = True
-DEBUG = True
-SHOW_HITBOX = DEBUG           # draw the rect
-SHOW_DIRECTIONS = DEBUG       # draw a line
+SHOW_HITBOX = True           # draw the rect
+SHOW_DIRECTIONS = True       # draw a line
 INVISIBILITY = CHEATS      # dont die
 DEBUG_POS = False
 DEBUG_STACK = False           # print stack
 DEBUG_SCORE = False          # print score and highscore
 
+WIN_SCORE = 10
+
 # screen
 WIDTH = 1024
 HEIGHT = 512
 
-# FPS = 10 if DEBUG else 60
 FPS = 60
 
 WIDTH_BACKUP = WIDTH
 HEIGHT_BACKUP = HEIGHT
-
-COUNTDOWN = 1  # number of second before the gameplay start
 
 APPROX_CORNER_COLLISION = 10
 

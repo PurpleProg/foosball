@@ -236,6 +236,7 @@ class Gameplay(State):
         self.ball.update(self.paddles)
 
         # only update score images if the score change
+        # also check if someone won
         if self.last_score != settings.score:
             self.score_left_image: pygame.Surface = self.score_font.render(
                 text=str(settings.score['LEFT']),
@@ -248,6 +249,10 @@ class Gameplay(State):
                 color=settings.SCORE_COLOR
             )
             self.last_score = settings.score.copy()
+
+            # check win
+            if settings.score['LEFT'] >= settings.WIN_SCORE or settings.score['RIGHT'] >= settings.WIN_SCORE:
+                Win(self.game)
 
         # process keys press
         if 'ESCAPE' in keys:

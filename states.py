@@ -3,7 +3,6 @@ from collections.abc import Callable
 from abc import ABC, abstractmethod
 import pygame
 from entitys import Paddle, Ball
-import utils
 import settings
 
 
@@ -312,7 +311,7 @@ class Mainmenu(Menu):
         self.buttons.extend([
             Menu.Button(
                 text='exit',
-                function=utils.exit_game,
+                function=self.exit_game,
                 font=self.font,
             ),  # exit
             Menu.Button(
@@ -355,11 +354,14 @@ class Mainmenu(Menu):
         """ new gameplay state """
         Gameplay(self.game)
 
+    def exit_game(self) -> None:
+        """ set game.running to false """
+        self.game.running = False
+
 
 class Gameover(Menu):
     """ gameover state, is a Menu.
-    save highscore to file if needed
-    shows score and highscore
+    shows score
     """
 
     def __init__(self, game) -> None:
@@ -394,11 +396,6 @@ class Gameover(Menu):
             font=self.bold_font,
             pos=(settings.WIDTH // 2, (settings.HEIGHT // 16) * 11)
         ))  # score : 99
-        self.labels.append(Menu.Label(
-            text=f"highscore : {settings.highscore['RIGHT']}-{settings.highscore['LEFT']}",
-            font=self.bold_font,
-            pos=(settings.WIDTH // 2, (settings.HEIGHT // 16) * 13)
-        ))  # highscore : 9999
 
     def to_menu(self) -> None:
         """ go back to the mainmenu by poping the states stack """
@@ -416,8 +413,7 @@ class Gameover(Menu):
 
 class Win(Menu):
     """ Win state,
-    ave the highscore to file if needed.
-    show score and highscore
+    show score
     """
 
     def __init__(self, game) -> None:
@@ -453,11 +449,6 @@ class Win(Menu):
                 font=self.bold_font,
                 pos=(settings.WIDTH // 2, (settings.HEIGHT // 16) * 11),
             ),  # score : 090
-            Menu.Label(
-                text=f"highscore : {settings.score['LEFT']}-{settings.score['RIGHT']}",
-                font=self.bold_font,
-                pos=(settings.WIDTH // 2, (settings.HEIGHT // 16) * 13),
-            ),  # highscore
         ])
 
     def to_menu(self) -> None:
@@ -566,14 +557,6 @@ class Settings(Menu):
     def to_resolution_settings(self) -> None:
         """ create new Resolution state """
         Resolution(self.game)
-
-    def save_score(self) -> None:
-        """ force save score to highscore file.
-        this is a debug feature.
-        """
-        raise NotImplementedError('not yet...')
-        # utils.save(score=settings.score)
-        # utils.load_highscore()
 
 
 class Difficulties(Menu):

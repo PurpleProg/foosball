@@ -2,9 +2,9 @@
 Copyright us
 Licence GPL-3+
 """
+import sys
 import pygame
 import states
-import utils
 import settings
 
 
@@ -32,8 +32,6 @@ class Game:
         self.clock = pygame.time.Clock()
         self.keys: set[str] = set()
 
-        utils.load_highscore()
-
     def main_loop(self) -> None:
         """ main game loop.
         executed once each frame.
@@ -51,7 +49,7 @@ class Game:
                 print()
             # debug score
             if settings.DEBUG_SCORE:
-                print(f'score : {settings.score}, highscore : {settings.highscore}')
+                print(f'score : {settings.score}')
 
     def event(self) -> None:
         """get event like keyboard press or mouse input and gather them in a dict"""
@@ -59,7 +57,8 @@ class Game:
             match event.type:
                 case pygame.QUIT:
                     self.running = False
-                    utils.exit_game()
+                    pygame.quit()
+                    sys.exit()
                 case pygame.KEYDOWN:
                     match event.key:
                         case pygame.K_ESCAPE:

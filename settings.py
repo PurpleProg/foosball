@@ -6,8 +6,6 @@ Color = NewType('Color', str)
 
 # global score
 score: dict[str, int] = {'RIGHT': 0, 'LEFT': 0,}
-# should be overwritten during game init
-highscore: dict[str, int] = {'RIGHT': 0, 'LEFT': 0,}
 
 
 # debugs

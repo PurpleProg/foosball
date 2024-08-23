@@ -238,12 +238,12 @@ class Gameplay(State):
         # only update score images if the score change
         # also check if someone won
         if self.last_score != settings.score:
-            self.score_left_image: pygame.Surface = self.score_font.render(
+            self.score_left_image = self.score_font.render(
                 text=str(settings.score['LEFT']),
                 antialias=False,
                 color=settings.SCORE_COLOR
             )
-            self.score_right_image: pygame.Surface = self.score_font.render(
+            self.score_right_image = self.score_font.render(
                 text=str(settings.score['RIGHT']),
                 antialias=False,
                 color=settings.SCORE_COLOR
@@ -251,8 +251,9 @@ class Gameplay(State):
             self.last_score = settings.score.copy()
 
             # check win
-            if settings.score['LEFT'] >= settings.WIN_SCORE or settings.score['RIGHT'] >= settings.WIN_SCORE:
-                Win(self.game)
+            for score in settings.score.values():
+                if score >= settings.WIN_SCORE:
+                    Win(self.game)
 
         # process keys press
         if 'ESCAPE' in keys:
@@ -509,12 +510,6 @@ class Pause(Menu):
             font=self.bold_font,
             pos=(settings.WIDTH // 2, int(settings.HEIGHT * 0.8))
         ))  # score : 999
-        if settings.DEBUG:
-            self.labels.append(Menu.Label(
-                text=f'Highscore : {settings.highscore}',
-                font=self.font,
-                pos=(150, 30),
-            ))  # highscore
 
     def resume(self) -> None:
         """ after pause restart a counter """
@@ -553,15 +548,6 @@ class Settings(Menu):
                 selected=True
             ),  # resolution
         ])
-
-        if settings.DEBUG:
-            self.buttons.append(
-                Menu.Button(
-                    text='save score to highscore file',
-                    function=self.save_score,
-                    font=self.font
-                ),  # save score
-            )
 
         for button in self.buttons:
             button.update()

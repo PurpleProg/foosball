@@ -1,3 +1,5 @@
+""" global container of sound objects """
+
 import pygame
 
 pygame.mixer.init()

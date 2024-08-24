@@ -165,7 +165,6 @@ class Ball:
             self.direction.y = -1
             self.frect.bottom = settings.HEIGHT
             pygame.mixer.Sound.play(self.ball_hit)
-        
 
     def collide_with_paddle(self, paddles: list[Paddle]) -> None:
         """ bounce on paddle, calculate bounce angle """

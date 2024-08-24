@@ -14,9 +14,10 @@ class Paddle:
         self.direction = pygame.Vector2(0, 0)
 
         self.image: pygame.Surface = pygame.image.load(
-            file='assets/Paddles/Style B/Paddle_B_Purple_128x28.png'
-        ).convert()
-        self.image.set_colorkey('#ff00ff')
+            file='assets/Paddles/Neo/Neo_Paddle_128x28.png'
+            ).convert()
+        #self.image.set_colorkey('#ff00ff')
+        self.image.set_colorkey('#ffffff')
         self.image = pygame.transform.rotate(
             surface=self.image,
             angle=90,

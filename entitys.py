@@ -16,8 +16,8 @@ class Paddle:
         self.image: pygame.Surface = pygame.image.load(
             file='assets/Paddles/Neo/Neo_Paddle_128x28.png'
             ).convert()
-        #self.image.set_colorkey('#ff00ff')
-        self.image.set_colorkey('#ffffff')
+        self.image.set_colorkey('#ff00ff')
+        #self.image.set_colorkey('#ff00d3')
         self.image = pygame.transform.rotate(
             surface=self.image,
             angle=90,

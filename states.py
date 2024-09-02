@@ -198,7 +198,7 @@ class Gameplay(State):
 
         self.field: pygame.Surface = pygame.transform.scale(
             surface=pygame.image.load(
-                file='assets/Field/field2.png'
+                file='assets/Field/field3.png'
             ).convert(),
             size=(settings.WIDTH, settings.HEIGHT)
         )
